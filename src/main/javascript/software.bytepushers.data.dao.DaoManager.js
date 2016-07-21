@@ -43,7 +43,7 @@
     BytePushers = BytePushers || {};
     BytePushers.dao = BytePushers.dao ||  BytePushers.namespace("software.bytepushers.data.dao");
 
-    BytePushers.dao.DaoManager = (function () {
+    BytePushers.dao.DaoManager = function () {
         var instance, registeredDaoConstructors;
 
         this.getDao = function(daoName) {
@@ -77,13 +77,11 @@
             registeredDaoConstructors[concreteDaoNameImpl] = null;
         };
 
-        return {
-            getInstance:  function () {
-                if (instance  ===  undefined) {
-                    instance = new BytePushers.daoDaoManager();
-                }
-                return instance;
+        this.getInstance = function () {
+            if (instance  ===  undefined) {
+                instance = new BytePushers.dao.DaoManager();
             }
-        };
-    })();
+            return instance;
+        }
+    }
 })(window, document, BytePushers);

@@ -1,7 +1,7 @@
 /**
  * Created by tonte on 7/17/16.
  */
-define(['bytepushers', 'BaseEntity', 'Person', 'bytePushersLocalForageDao', 'bytePushersDaoManager'], function(BytePushers) {
+define(['bytepushers', 'Person', 'bytePushersLocalForageDao', 'bytePushersDaoManager'], function(BytePushers) {
     describe("Bytepushers Generic DAO", function() {
         it('should be able to do CRUD operations', function() {
             var personConfig = {

@@ -35,13 +35,13 @@ require.config({
           deps: ['bytepushers']
       },
       bytePushersLocalForageDao: {
-          deps: ['bytepushers']
+          deps: ['bytePushersGenericDao','bytepushers']
       },
       BaseEntity: {
           deps: ['bytepushers']
       },
       Person: {
-          deps: ['bytepushers']
+          deps: ['bytepushers', 'BaseEntity']
       }
   },
 
