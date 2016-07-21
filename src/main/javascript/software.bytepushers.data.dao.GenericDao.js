@@ -5,7 +5,8 @@
  */
 (function(window, document, BytePushers) {
 
-    BytePushers.dao = BytePushers.namespace("software.bytepushers.data.dao");
+    BytePushers = BytePushers || {};
+    BytePushers.dao = BytePushers.dao ||  BytePushers.namespace("software.bytepushers.data.dao");
 
     var Entity, isEntityIdValid;
 

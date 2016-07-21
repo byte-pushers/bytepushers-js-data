@@ -40,9 +40,10 @@
         return entityName;
     };
 
-    BytePushers.data = BytePushers.data || BytePushers.namespace("software.bytepushers.data");
+    BytePushers = BytePushers || {};
+    BytePushers.dao = BytePushers.dao ||  BytePushers.namespace("software.bytepushers.data.dao");
 
-    BytePushers.daoDaoManager = (function () {
+    BytePushers.dao.DaoManager = (function () {
         var instance, registeredDaoConstructors;
 
         this.getDao = function(daoName) {

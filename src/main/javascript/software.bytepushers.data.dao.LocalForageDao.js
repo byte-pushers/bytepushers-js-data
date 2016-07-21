@@ -26,7 +26,8 @@
         }
     };
 
-    BytePushers.dao = BytePushers || BytePushers.namespace("software.bytepushers.data.dao");
+    BytePushers = BytePushers || {};
+    BytePushers.dao = BytePushers.dao ||  BytePushers.namespace("software.bytepushers.data.dao");
 
     BytePushers.dao.LocalForageDao = function LocalForageDao(daoConfig) {
         BytePushers.dao.LocalForageDao.prototype.superclass.apply(this, [daoConfig]);
