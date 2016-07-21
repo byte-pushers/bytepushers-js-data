@@ -26,22 +26,22 @@ require.config({
           exports: 'BytePushers'
       },
       bytePushersDaoManager: {
-          deps: ['BytePushers']
+          deps: ['bytePushersGenericDaoException']
       },
       bytePushersGenericDao: {
           deps: ['BytePushers']
       },
       bytePushersGenericDaoException: {
-          deps: ['BytePushers']
+          deps: ['bytePushersGenericDao']
       },
       bytePushersLocalForageDao: {
-          deps: ['BytePushers']
+          deps: ['bytePushersGenericDao']
       },
       BaseEntity: {
           deps: ['BytePushers']
       },
       Person: {
-          deps: ['BytePushers']
+          deps: ['BytePushers', 'BaseEntity']
       }
   },
 

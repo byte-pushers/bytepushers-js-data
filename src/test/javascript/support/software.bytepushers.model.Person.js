@@ -68,5 +68,4 @@
             BytePushers.models.Person.prototype.superclass.prototype.toString.apply(this, [false, false]) +
         "}";
     };
-
 })(window, document, BytePushers);

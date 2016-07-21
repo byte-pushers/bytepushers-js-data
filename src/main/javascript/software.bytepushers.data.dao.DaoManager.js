@@ -43,10 +43,10 @@
     BytePushers = BytePushers || {};
     BytePushers.dao = BytePushers.dao ||  BytePushers.namespace("software.bytepushers.data.dao");
 
-    BytePushers.dao.DaoManager = function () {
+    BytePushers.dao.DaoManager = (function () {
         var instance, registeredDaoConstructors;
 
-        this.getDao = function(daoName) {
+        function getDao(daoName) {
             var dao = null;
 
             if(typeof registeredDaoConstructors[daoName] === "object"){
@@ -60,7 +60,7 @@
             return dao;
         };
 
-        this.registerDao = function (Entity, Dao) {
+        function registerDao(Entity, Dao) {
             var entityName = getEntityName(Entity),
                 concreteDaoName = getConcreteDaoImplName(Dao, entityName),
                 concreteDaoNameImpl = concreteDaoName + "Impl",
@@ -77,11 +77,16 @@
             registeredDaoConstructors[concreteDaoNameImpl] = null;
         };
 
-        this.getInstance = function () {
-            if (instance  ===  undefined) {
-                instance = new BytePushers.dao.DaoManager();
+        return {
+            getInstance:  function () {
+                if (instance === undefined) {
+                    instance = {
+                      getDao: getDao,
+                      registerDao: registerDao
+                    };
+                }
+                return instance;
             }
-            return instance;
-        }
-    }
+        };
+    })();
 })(window, document, BytePushers);
