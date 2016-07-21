@@ -1,24 +1,18 @@
 /* jshint -W108, -W109 */
 (function(window, document, BytePushers) {
-  var PMMS;
+  
 
-  if (window.PMMS !== undefined && window.PMMS !== null) {
-    PMMS = window.PMMS;
-  } else {
-    window.PMMS = {};
-    PMMS = window.PMMS;
-  }
-
-  PMMS.models = BytePushers.namespace("gov.llnl.models");
+  BytePushers = BytePushers || {};
+  BytePushers.models = BytePushers.models ||  BytePushers.namespace("software.bytepushers.models");
 
   /**
    * A convenient function that can be used for any abstract method
    */
-  PMMS.models.abstractMethod = function () {
+  BytePushers.models.abstractMethod = function () {
     throw new Error("abstract method");
   };
 
-  PMMS.models.BaseEntity = function BaseEntity(baseEntityJsonConfig) {
+  BytePushers.models.BaseEntity = function BaseEntity(baseEntityJsonConfig) {
     var self = this,
         id = (Object.isDefined(baseEntityJsonConfig) && Object.isNumeric(baseEntityJsonConfig.id))?
           baseEntityJsonConfig.id: null,
@@ -68,11 +62,11 @@
     };
   };
 
-  PMMS.models.BaseEntity.prototype.formatJsonIdProperty = function() {
+  BytePushers.models.BaseEntity.prototype.formatJsonIdProperty = function() {
     return (Object.isNumeric(this.getId()))? this.getId() : (Object.isString(this.getId()))? "\"" + this.getId() + "\"" : null;
   };
 
-  PMMS.models.BaseEntity.prototype.toJSON = function(serializeUIProperties, useWrapper, includeId) {
+  BytePushers.models.BaseEntity.prototype.toJSON = function(serializeUIProperties, useWrapper, includeId) {
     serializeUIProperties = this.useSerializeUIProperties(serializeUIProperties);
     useWrapper = this.shouldUseWapper(useWrapper);
     includeId = this.shouldIncludeId(includeId);
@@ -91,7 +85,7 @@
     return json;
   };
 
-  PMMS.models.BaseEntity.prototype.toString = function (useWrapper, includeId) {
+  BytePushers.models.BaseEntity.prototype.toString = function (useWrapper, includeId) {
     useWrapper = (Object.isBoolean(useWrapper))? useWrapper : true;
     includeId = (Object.isBoolean(includeId))? includeId : true;
     return  ((useWrapper)? "Base Entity {": "") +
@@ -103,15 +97,15 @@
     ((useWrapper)? "}": "");
   };
 
-  PMMS.models.BaseEntity.prototype.useSerializeUIProperties = function(serializeUIProperties) {
+  BytePushers.models.BaseEntity.prototype.useSerializeUIProperties = function(serializeUIProperties) {
     return (Object.isBoolean(serializeUIProperties))? serializeUIProperties : false;
   };
 
-  PMMS.models.BaseEntity.prototype.shouldUseWapper = function(useWrapper) {
+  BytePushers.models.BaseEntity.prototype.shouldUseWapper = function(useWrapper) {
     return (Object.isBoolean(useWrapper))? useWrapper : true;
   };
 
-  PMMS.models.BaseEntity.prototype.shouldIncludeId = function(includeId) {
+  BytePushers.models.BaseEntity.prototype.shouldIncludeId = function(includeId) {
     return (Object.isBoolean(includeId))? includeId : true;
   };
 

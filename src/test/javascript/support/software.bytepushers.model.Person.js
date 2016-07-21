@@ -2,8 +2,9 @@
  * Created by tonte on 7/18/16.
  */
 (function(window, document, BytePushers) {
+    BytePushers = BytePushers || {};
+    BytePushers.models = BytePushers.models ||  BytePushers.namespace("software.bytepushers.models");
 
-    BytePushers.models = BytePushers.namespace("gov.llnl.models");
     BytePushers.models.Person = function (personJsonConfig) {
         BytePushers.models.Person.prototype.superclass.apply(this, [personJsonConfig]);
 
