@@ -13,8 +13,8 @@ define(['bytepushers'], function(BytePushers) {
                 personDao,
                 persistedPerson;
 
-            BytePushers.data.DaoManager.getInstance().registerDao(BytePushers.models.Person, BytePushers.data.LocalForageDao);
-            personDao = BytePushers.data.DaoManager.getInstance().getDao("PersonLocalForageDao");
+            BytePushers.dao.DaoManager.getInstance().registerDao(BytePushers.models.Person, BytePushers.dao.LocalForageDao);
+            personDao = BytePushers.dao.DaoManager.getInstance().getDao("PersonLocalForageDao");
 
             expect(person.getId()).toBeNull();
             personDao.create(person);

@@ -6,7 +6,7 @@
         var concreteDaoImplName;
 
         if(Object.isDefined(Dao)) {
-            throw new BytePushers.data.GenericDaoException("DAO Adapter(" + Dao + ") constructor method must be defined.");
+            throw new BytePushers.daoGenericDaoException("DAO Adapter(" + Dao + ") constructor method must be defined.");
         }
 
         if(Object.isDefined(entityName)) {
@@ -42,7 +42,7 @@
 
     BytePushers = BytePushers || BytePushers.namespace("software.bytepushers.data");
 
-    BytePushers.data.DaoManager = (function () {
+    BytePushers.daoDaoManager = (function () {
         var instance, registeredDaoConstructors;
 
         this.getDao = function(daoName) {
@@ -79,7 +79,7 @@
         return {
             getInstance:  function () {
                 if (instance  ===  undefined) {
-                    instance = new BytePushers.data.DaoManager();
+                    instance = new BytePushers.daoDaoManager();
                 }
                 return instance;
             }

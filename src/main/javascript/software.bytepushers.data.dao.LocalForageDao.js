@@ -26,22 +26,22 @@
         }
     };
 
-    BytePushers.persistence = BytePushers.namespace("software.bytepushers.data.persistence");
+    BytePushers.dao = BytePushers || BytePushers.namespace("software.bytepushers.data.dao");
 
-    BytePushers.persistence.LocalForageDao = function LocalForageDao(daoConfig) {
-        BytePushers.persistence.LocalForageDao.prototype.superclass.apply(this, [daoConfig]);
+    BytePushers.dao.LocalForageDao = function LocalForageDao(daoConfig) {
+        BytePushers.dao.LocalForageDao.prototype.superclass.apply(this, [daoConfig]);
         dataStore = (Object.isDefined(daoConfig) && Object.isDefined(daoConfig.dataStore))? daoConfig.dataStore : null;
     };
 
-    BytePushers.persistence.LocalForageDao.prototype.setDataStore = function(dataStoreConnection) {
-        BytePushers.persistence.LocalForageDao.prototype.superclass.prototype.create.apply(this, [dataStoreConnection]);
+    BytePushers.dao.LocalForageDao.prototype.setDataStore = function(dataStoreConnection) {
+        BytePushers.dao.LocalForageDao.prototype.superclass.prototype.create.apply(this, [dataStoreConnection]);
     };
 
-    BytePushers.persistence.LocalForageDao.prototype.create = function(newEntity) {
+    BytePushers.dao.LocalForageDao.prototype.create = function(newEntity) {
         var promise;
 
-        if(!BytePushers.persistence.LocalForageDao.prototype.isPrototypeOf(arguments.callee.caller)) {
-            throw new BytePushers.persistence.GenericDaoException("Can not call object unless in LocalForageDao Object's hierarchy prototype chain.");
+        if(!BytePushers.dao.LocalForageDao.prototype.isPrototypeOf(arguments.callee.caller)) {
+            throw new BytePushers.dao.GenericDaoException("Can not call object unless in LocalForageDao Object's hierarchy prototype chain.");
         }
 
         promise = new Promise(function(resolve, reject) {
@@ -56,7 +56,7 @@
                 newlyPersistedEntity = this.createEntity(newlyPersistedEntityConfig);
                 resolve(newlyPersistedEntity);
             }).catch(function (error) {
-                reject(new BytePushers.persistence.DaoAdapterException(error));
+                reject(new BytePushers.dao.DaoAdapterException(error));
             });
 
         });
@@ -65,11 +65,11 @@
 
     };
 
-    BytePushers.persistence.LocalForageDao.prototype.read = function(entityId) {
+    BytePushers.dao.LocalForageDao.prototype.read = function(entityId) {
         var promise;
 
-        if(!BytePushers.persistence.LocalForageDao.prototype.isPrototypeOf(arguments.callee.caller)) {
-            throw new BytePushers.persistence.GenericDaoException("Can not call object unless in LocalForageDao Object's hierarchy prototype chain.");
+        if(!BytePushers.dao.LocalForageDao.prototype.isPrototypeOf(arguments.callee.caller)) {
+            throw new BytePushers.dao.GenericDaoException("Can not call object unless in LocalForageDao Object's hierarchy prototype chain.");
         }
 
         promise = new Promise(function(resolve, reject) {
@@ -83,18 +83,18 @@
                 existingEnity = this.createEntity(existingEntityConfig);
                 resolve(existingEnity);
             }).catch(function(error) {
-                reject(new BytePushers.persistence.DaoAdapterException(error));
+                reject(new BytePushers.dao.DaoAdapterException(error));
             })
         });
 
         return promise;
     };
 
-    BytePushers.persistence.LocalForageDao.prototype.update = function(updatedEntity) {
+    BytePushers.dao.LocalForageDao.prototype.update = function(updatedEntity) {
         var promise;
 
-        if(!BytePushers.persistence.LocalForageDao.prototype.isPrototypeOf(arguments.callee.caller)) {
-            throw new BytePushers.persistence.GenericDaoException("Can not call object unless in LocalForageDao Object's hierarchy prototype chain.");
+        if(!BytePushers.dao.LocalForageDao.prototype.isPrototypeOf(arguments.callee.caller)) {
+            throw new BytePushers.dao.GenericDaoException("Can not call object unless in LocalForageDao Object's hierarchy prototype chain.");
         }
 
         promise = new Promise(function(resolve, reject) {
@@ -106,7 +106,7 @@
             dataStore.setItem(updatedEntity.getId(), updatedEntity).then(function (updatedEntityConfig) {
                 resolve(updatedEntity);
             }).catch(function (error) {
-                reject(new BytePushers.persistence.DaoAdapterException(error));
+                reject(new BytePushers.dao.DaoAdapterException(error));
             });
         });
 
@@ -114,11 +114,11 @@
 
     };
 
-    BytePushers.persistence.LocalForageDao.prototype.delete = function(entityId) {
+    BytePushers.dao.LocalForageDao.prototype.delete = function(entityId) {
         var promise;
 
-        if(!BytePushers.persistence.LocalForageDao.prototype.isPrototypeOf(arguments.callee.caller)) {
-            throw new BytePushers.persistence.GenericDaoException("Can not call object unless in LocalForageDao Object's hierarchy prototype chain.");
+        if(!BytePushers.dao.LocalForageDao.prototype.isPrototypeOf(arguments.callee.caller)) {
+            throw new BytePushers.dao.GenericDaoException("Can not call object unless in LocalForageDao Object's hierarchy prototype chain.");
         }
 
         promise = new Promise(function(resolve, reject) {
@@ -130,7 +130,7 @@
             dataStore.removeItem(entityId).then(function () {
                 resolve();
             }).catch(function (error) {
-                reject(new BytePushers.persistence.DaoAdapterException(error));
+                reject(new BytePushers.dao.DaoAdapterException(error));
             });
 
         });
@@ -138,8 +138,8 @@
         return promise;
     };
 
-    PMMS.persistence.LocalForageDao.prototype = BytePushers.inherit(BytePushers.persistence.GenericDAO.prototype);
-    PMMS.persistence.LocalForageDao.prototype.constructor = PMMS.persistence.LocalForageDao;
-    PMMS.persistence.LocalForageDao.prototype.superclass = BytePushers.persistence.GenericDAO;
+    PMMS.dao.LocalForageDao.prototype = BytePushers.inherit(BytePushers.dao.GenericDAO.prototype);
+    PMMS.dao.LocalForageDao.prototype.constructor = PMMS.dao.LocalForageDao;
+    PMMS.dao.LocalForageDao.prototype.superclass = BytePushers.dao.GenericDAO;
 
 })(window, document, BytePushers);
