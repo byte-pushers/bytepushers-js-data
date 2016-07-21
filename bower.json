@@ -1,0 +1,28 @@
+{
+  "name": "bytepushers-js-data",
+  "version": "0.0.0",
+  "description": "A JavaScript framework that implements the Repository Design Pattern for persisting data to a data store.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/byte-pushers/bytepushers-js-data.git"
+  },
+  "license": "MIT",
+  "author": "Tonté Pouncil <tonte.pouncil@bytepushers.software>",
+  "contributors": [
+    "Jared Ramirez <jaredramirez@me.com> ",
+    "Tonté Pouncil <pouncilt.developer@gmail.com> "
+  ],
+  "directories": {
+    "lib": "release"
+  },
+  "main": [
+    "release/bytepushers-js-data.js"
+  ],
+  "dependencies": {
+    "localforage": "^1.4.2",
+    "es6-promise": "^3.2.2"
+  },
+  "devDependencies": {
+    "bytepushers-js-core": "^0.0.63"
+  }
+}
