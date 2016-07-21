@@ -6,11 +6,11 @@ define(['bytepushers'], function(BytePushers) {
         var concreteDaoImplName;
 
         if(Object.isDefined(Dao)) {
-            throw new BytePushers.persistence.GenericDaoException("DAO Adapter(" + Dao + ") constructor method must be defined.");
+            throw new BytePushers.data.GenericDaoException("DAO Adapter(" + Dao + ") constructor method must be defined.");
         }
 
         if(Object.isDefined(entityName)) {
-            throw new BytePushers.persistence.GenericDaoException("Entity Name(" + entityName + ") must be defined.");
+            throw new BytePushers.dao.GenericDaoException("Entity Name(" + entityName + ") must be defined.");
         }
 
         if(Object.isConstructorFunction(Dao)){
@@ -19,7 +19,7 @@ define(['bytepushers'], function(BytePushers) {
             concreteDaoImplName = Dao.name.substringBefore("Dao");
 
             if(concreteDaoImplName.trim().length === 0){
-                throw new BytePushers.persistence.GenericDaoException("DAO Adapter(" + Dao + ") constructor method must be prefixed with the name of the platform it implements.  For example, 'LocalForage' is the prefix in 'LocalForageBaseDaoAdapter'.");
+                throw new BytePushers.dao.GenericDaoException("DAO Adapter(" + Dao + ") constructor method must be prefixed with the name of the platform it implements.  For example, 'LocalForage' is the prefix in 'LocalForageBaseDaoAdapter'.");
             }
         }
 
@@ -30,7 +30,7 @@ define(['bytepushers'], function(BytePushers) {
         var entityName;
 
         if(Object.isDefined(Entity)) {
-            throw new BytePushers.persistence.GenericDaoException("Entity(" + Entity + ") constructor method must be defined.");
+            throw new BytePushers.dao.GenericDaoException("Entity(" + Entity + ") constructor method must be defined.");
         }
 
         if(Object.isConstructorFunction(Entity)){

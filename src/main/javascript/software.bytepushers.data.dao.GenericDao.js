@@ -5,7 +5,7 @@
  */
 (function(window, document, BytePushers) {
 
-    BytePushers.persistence = BytePushers.namespace("software.bytepushers.data.persistence");
+    BytePushers.dao = BytePushers.namespace("software.bytepushers.data.dao");
 
     var Entity, isEntityIdValid;
 
@@ -15,57 +15,57 @@
             daoConfig.entityIdVaidationMethod : function() {};
     };
 
-    BytePushers.persistence.GenericDAO = function (daoConfig) {
+    BytePushers.dao.GenericDAO = function (daoConfig) {
         Entity = (Object.isDefined(daoConfig) && Object.isFunction(daoConfig.Entity))? daoConfig.Entity : null;
         isEntityIdValid = getEntityIdValidationMethod(daoConfig);
     };
 
-    BytePushers.persistence.GenericDAO.prototype.isEntityIdValid = isEntityIdValid;
+    BytePushers.dao.GenericDAO.prototype.isEntityIdValid = isEntityIdValid;
 
-    BytePushers.persistence.GenericDAO.prototype.createEntity = function(entityConfig) {
+    BytePushers.dao.GenericDAO.prototype.createEntity = function(entityConfig) {
         var entity;
 
-        if(!BytePushers.persistence.GenericDAO.prototype.isPrototypeOf(arguments.callee.caller)) {
-           throw new BytePushers.persistence.GenericDaoException("Can not call object unless in Object's hierarchy prototype chain.");
+        if(!BytePushers.dao.GenericDAO.prototype.isPrototypeOf(arguments.callee.caller)) {
+           throw new BytePushers.dao.GenericDaoException("Can not call object unless in Object's hierarchy prototype chain.");
         }
 
         entity = new Entity(entityConfig);
         return entity;
     };
 
-    BytePushers.persistence.GenericDAO.prototype.create = function(newEntity) {
-        if(!BytePushers.persistence.GenericDAO.prototype.isPrototypeOf(arguments.callee.caller)) {
-            throw new BytePushers.persistence.GenericDaoException("Can not call object unless in Object's hierarchy prototype chain.");
+    BytePushers.dao.GenericDAO.prototype.create = function(newEntity) {
+        if(!BytePushers.dao.GenericDAO.prototype.isPrototypeOf(arguments.callee.caller)) {
+            throw new BytePushers.dao.GenericDaoException("Can not call object unless in Object's hierarchy prototype chain.");
         }
 
-        throw new BytePushers.persistence.GenericDaoException("abstract method");
+        throw new BytePushers.dao.GenericDaoException("abstract method");
     };
 
-    BytePushers.persistence.GenericDAO.prototype.read = function(entityId) {
-        if(!BytePushers.persistence.GenericDAO.prototype.isPrototypeOf(arguments.callee.caller)) {
-            throw new BytePushers.persistence.GenericDaoException("Can not call object unless in Object's hierarchy prototype chain.");
+    BytePushers.dao.GenericDAO.prototype.read = function(entityId) {
+        if(!BytePushers.dao.GenericDAO.prototype.isPrototypeOf(arguments.callee.caller)) {
+            throw new BytePushers.dao.GenericDaoException("Can not call object unless in Object's hierarchy prototype chain.");
         }
 
-        throw new BytePushers.persistence.GenericDaoException("abstract method");
+        throw new BytePushers.dao.GenericDaoException("abstract method");
     };
 
-    BytePushers.persistence.GenericDAO.prototype.update = function(existingEntity) {
-        if(!BytePushers.persistence.GenericDAO.prototype.isPrototypeOf(arguments.callee.caller)) {
-            throw new BytePushers.persistence.GenericDaoException("Can not call object unless in Object's hierarchy prototype chain.");
+    BytePushers.dao.GenericDAO.prototype.update = function(existingEntity) {
+        if(!BytePushers.dao.GenericDAO.prototype.isPrototypeOf(arguments.callee.caller)) {
+            throw new BytePushers.dao.GenericDaoException("Can not call object unless in Object's hierarchy prototype chain.");
         }
 
-        throw new BytePushers.persistence.GenericDaoException("abstract method");
+        throw new BytePushers.dao.GenericDaoException("abstract method");
     };
 
-    BytePushers.persistence.GenericDAO.prototype.delete = function(entityId) {
-        if(!BytePushers.persistence.GenericDAO.prototype.isPrototypeOf(arguments.callee.caller)) {
-            throw new BytePushers.persistence.GenericDaoException("Can not call object unless in Object's hierarchy prototype chain.");
+    BytePushers.dao.GenericDAO.prototype.delete = function(entityId) {
+        if(!BytePushers.dao.GenericDAO.prototype.isPrototypeOf(arguments.callee.caller)) {
+            throw new BytePushers.dao.GenericDaoException("Can not call object unless in Object's hierarchy prototype chain.");
         }
 
-        throw new BytePushers.persistence.GenericDaoException("abstract method");
+        throw new BytePushers.dao.GenericDaoException("abstract method");
     };
 
-    BytePushers.persistence.GenericDAO.prototype.createLocalForageDao = function(Entity, DaoAdapter) {
+    BytePushers.dao.GenericDAO.prototype.createLocalForageDao = function(Entity, DaoAdapter) {
         var entityName = getEntityName(Entity),
             concreteDaoImplName = getConcreteDaoImplName(DaoAdapter, entityName),
             daoAdapter = new DaoAdapter();
@@ -74,9 +74,9 @@
             '}')(def),
             ConcreteDaoImplConstructor = generatateConcreteDaoConstructor();
 
-        ConcreteDaoImplConstructor.prototype = BytePushers.inherit(BytePushers.persistence.GenericDaoLocalForage);
+        ConcreteDaoImplConstructor.prototype = BytePushers.inherit(BytePushers.dao.GenericDaoLocalForage);
         ConcreteDaoImplConstructor.prototype.constructor = ConcreteDaoImplConstructor;
-        ConcreteDaoImplConstructor.prototype.superclass = BytePushers.persistence.GenericDaoLocalForage;
+        ConcreteDaoImplConstructor.prototype.superclass = BytePushers.dao.GenericDaoLocalForage;
 
         ConcreteDaoImplConstructor.prototype.create = function(newlyCreatedEntity) {
 

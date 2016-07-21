@@ -4,18 +4,18 @@
 (function (window, document, BytePushers) {
     "use strict";
     BytePushers = BytePushers || {};
-    BytePushers.persistence = BytePushers.persistence ||  BytePushers.namespace("software.bytepushers.data.persistence");
-    BytePushers.persistence.GenericDaoException = function (message) {
+    BytePushers.dao = BytePushers.dao ||  BytePushers.namespace("software.bytepushers.data.dao");
+    BytePushers.dao.GenericDaoException = function (message) {
         //Error.call(this, message);
-        BytePushers.persistence.GenericDaoException.prototype.superclass.apply(this, [message]);
+        BytePushers.dao.GenericDaoException.prototype.superclass.apply(this, [message]);
 
-        this.name = "BytePushers.persistence.GenericDaoException";
+        this.name = "BytePushers.dao.GenericDaoException";
         this.message = message;
     };
-    BytePushers.persistence.GenericDaoException.prototype = BytePushers.inherit(Error.prototype);
-    BytePushers.persistence.GenericDaoException.prototype.constructor = BytePushers.persistence.GenericDaoException;
-    BytePushers.persistence.GenericDaoException.prototype.superclass = Error;
-    BytePushers.persistence.GenericDaoException.prototype.toString = function () {
+    BytePushers.dao.GenericDaoException.prototype = BytePushers.inherit(Error.prototype);
+    BytePushers.dao.GenericDaoException.prototype.constructor = BytePushers.dao.GenericDaoException;
+    BytePushers.dao.GenericDaoException.prototype.superclass = Error;
+    BytePushers.dao.GenericDaoException.prototype.toString = function () {
         return this.name + "(" + this.message + ")";
     };
 }(window, document, BytePushers));
