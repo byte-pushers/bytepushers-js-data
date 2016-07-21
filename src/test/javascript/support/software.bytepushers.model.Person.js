@@ -1,8 +1,8 @@
 /**
  * Created by tonte on 7/18/16.
  */
-(function(window, document, BytePushers) {
-    
+ define(['bytepushers'], function(BytePushers) {
+
     BytePushers.models = BytePushers.namespace("gov.llnl.models");
     BytePushers.models.Person = function (personJsonConfig) {
         BytePushers.models.Person.prototype.superclass.apply(this, [personJsonConfig]);
@@ -67,4 +67,4 @@
             BytePushers.models.Person.prototype.superclass.prototype.toString.apply(this, [false, false]) +
         "}";
     };
-})(window, document, BytePushers);
+});

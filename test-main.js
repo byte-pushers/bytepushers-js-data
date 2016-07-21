@@ -1,7 +1,7 @@
 var allTestFiles = [];
 for (var file in window.__karma__.files) {
     if (window.__karma__.files.hasOwnProperty(file)) {
-        if (/Spec\.js$/.test(file)) {
+        if (/\.spec\.js$/.test(file)) {
             allTestFiles.push(file);
         }
     }
@@ -11,11 +11,14 @@ require.config({
   baseUrl: '/base',
 
   paths: {
-      'BytePushers': 'bower_components/bytepushers-js-core/release/bytepushers-js-core',
+      'bytepushers': 'bower_components/bytepushers-js-core/release/bytepushers-js-core',
       'bytePushersDaoManager': 'src/main/javascript/software.bytepushers.data.dao.DaoManager',
       'bytePushersGenericDao': 'src/main/javascript/software.bytepushers.data.dao.GenericDao',
       'bytePushersGenericDaoException': 'src/main/javascript/software.bytepushers.data.dao.GenericDaoException',
-      'bytePushersLocalForageDao': 'src/main/javascript/software.bytepushers.data.dao.LocalForageDao'
+      'bytePushersLocalForageDao': 'src/main/javascript/software.bytepushers.data.dao.LocalForageDao',
+
+      'BaseEntity': 'src/test/javascript/support/software.bytepushers.model.BaseEntity',
+      'Person': 'src/test/javascript/support/software.bytepushers.model.Person'
   },
 
   shim: {
@@ -32,6 +35,12 @@ require.config({
           deps: ['bytepushers']
       },
       bytePushersLocalForageDao: {
+          deps: ['bytepushers']
+      },
+      BaseEntity: {
+          deps: ['bytepushers']
+      },
+      Person: {
           deps: ['bytepushers']
       }
   },

@@ -1,7 +1,7 @@
 /**
  * Created by tonte on 7/20/16.
  */
-(function(window, document, BytePushers) {
+define(['bytepushers'], function(BytePushers) {
     var dataStore;
 
     var validateEntityId = function(p) {
@@ -142,4 +142,4 @@
     PMMS.persistence.LocalForageDao.prototype.constructor = PMMS.persistence.LocalForageDao;
     PMMS.persistence.LocalForageDao.prototype.superclass = BytePushers.persistence.GenericDAO;
 
-})(window, document, BytePushers);
+});
