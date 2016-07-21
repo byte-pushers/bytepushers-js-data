@@ -1,7 +1,7 @@
 /**
  * Created by tonte on 7/20/16.
  */
-define(['bytepushers'], function(BytePushers) {
+(function(window, document, BytePushers) {
     var dataStore;
 
     var validateEntityId = function(p) {
@@ -138,8 +138,9 @@ define(['bytepushers'], function(BytePushers) {
         return promise;
     };
 
-    PMMS.dao.LocalForageDao.prototype = BytePushers.inherit(BytePushers.dao.GenericDAO.prototype);
-    PMMS.dao.LocalForageDao.prototype.constructor = PMMS.dao.LocalForageDao;
-    PMMS.dao.LocalForageDao.prototype.superclass = BytePushers.dao.GenericDAO;
+    BytePushers.dao.LocalForageDao.prototype = BytePushers.inherit(BytePushers.dao.GenericDAO.prototype);
+    BytePushers.dao.LocalForageDao.prototype.constructor = BytePushers.dao.LocalForageDao;
+    BytePushers.dao.LocalForageDao.prototype.superclass = BytePushers.dao.GenericDAO;
 
-});
+
+})(window, document, BytePushers);

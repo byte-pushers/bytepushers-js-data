@@ -1,7 +1,7 @@
 /**
  * Created by tonte on 7/20/16.
  */
-define(['bytepushers'], function(BytePushers) {
+(function(window, document, BytePushers) {
     var getConcreteDaoImplName = function(Dao, entityName) {
         var concreteDaoImplName;
 
@@ -85,4 +85,4 @@ define(['bytepushers'], function(BytePushers) {
             }
         };
     })();
-});
+})(window, document, BytePushers);
