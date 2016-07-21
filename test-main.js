@@ -11,7 +11,7 @@ require.config({
   baseUrl: '/base',
 
   paths: {
-      'bytepushers': 'bower_components/bytepushers-js-core/release/bytepushers-js-core',
+      'BytePushers': 'bower_components/bytepushers-js-core/release/bytepushers-js-core',
       'bytePushersDaoManager': 'src/main/javascript/software.bytepushers.data.dao.DaoManager',
       'bytePushersGenericDao': 'src/main/javascript/software.bytepushers.data.dao.GenericDao',
       'bytePushersGenericDaoException': 'src/main/javascript/software.bytepushers.data.dao.GenericDaoException',
@@ -22,26 +22,26 @@ require.config({
   },
 
   shim: {
-      bytepushers: {
+      BytePushers: {
           exports: 'BytePushers'
       },
       bytePushersDaoManager: {
-          deps: ['bytepushers']
+          deps: ['BytePushers']
       },
       bytePushersGenericDao: {
-          deps: ['bytepushers']
+          deps: ['BytePushers']
       },
       bytePushersGenericDaoException: {
-          deps: ['bytepushers']
+          deps: ['BytePushers']
       },
       bytePushersLocalForageDao: {
-          deps: ['bytePushersGenericDao','bytepushers']
+          deps: ['bytePushersGenericDao','BytePushers']
       },
       BaseEntity: {
-          deps: ['bytepushers']
+          deps: ['BytePushers']
       },
       Person: {
-          deps: ['bytepushers', 'BaseEntity']
+          deps: ['BytePushers', 'BaseEntity']
       }
   },
 

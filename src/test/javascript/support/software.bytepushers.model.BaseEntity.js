@@ -1,5 +1,5 @@
 /* jshint -W108, -W109 */
-define(['bytepushers'], function(BytePushers) {
+(function(window, document, BytePushers) {
   var PMMS;
 
   if (window.PMMS !== undefined && window.PMMS !== null) {
@@ -115,4 +115,4 @@ define(['bytepushers'], function(BytePushers) {
     return (Object.isBoolean(includeId))? includeId : true;
   };
 
-});
+})(window, document, BytePushers);
