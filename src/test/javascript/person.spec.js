@@ -1,4 +1,4 @@
-define(['bytepushers', 'Person'], function(BytePushers) {
+define(['BytePushers', 'Person'], function(BytePushers) {
     describe("Person Text", function() {
         it('should be able to do CRUD operations', function() {
             var personConfig = {
