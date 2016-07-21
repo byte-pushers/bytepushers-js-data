@@ -13,7 +13,11 @@ define(['bytepushers', 'Person', 'bytePushersLocalForageDao', 'bytePushersDaoMan
                 personDao,
                 persistedPerson;
 
-            BytePushers.dao.DaoManager.getInstance().registerDao(BytePushers.models.Person, BytePushers.dao.LocalForageDao);
+            BytePushers.dao.DaoManager.getInstance()
+              .registerDao(
+                BytePushers.models.Person,
+                BytePushers.dao.LocalForageDao
+              );
             personDao = BytePushers.dao.DaoManager.getInstance().getDao("PersonLocalForageDao");
 
             expect(person.getId()).toBeNull();
