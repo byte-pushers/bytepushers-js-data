@@ -1,92 +1,139 @@
+/*global console, BytePushers*/
+/* jshint -W108, -W109, -W054 */
 /**
  * Created by tonte on 7/20/16.
  */
-(function(window, document, BytePushers) {
-    var getConcreteDaoImplName = function(Dao, entityName) {
-        var concreteDaoImplName;
+(function (BytePushers) {
+    'use strict';
+    var getConcreteDaoName = function (Dao, entityName) {
+            var concreteDaoImplName;
 
-        if(Object.isDefined(Dao)) {
-            throw new BytePushers.daoGenericDaoException("DAO Adapter(" + Dao + ") constructor method must be defined.");
-        }
-
-        if(Object.isDefined(entityName)) {
-            throw new BytePushers.dao.GenericDaoException("Entity Name(" + entityName + ") must be defined.");
-        }
-
-        if(Object.isConstructorFunction(Dao)){
-            concreteDaoImplName = Dao.name.substringBefore("GenericDao");
-            concreteDaoImplName = Dao.name.substringBefore("BaseDao");
-            concreteDaoImplName = Dao.name.substringBefore("Dao");
-
-            if(concreteDaoImplName.trim().length === 0){
-                throw new BytePushers.dao.GenericDaoException("DAO Adapter(" + Dao + ") constructor method must be prefixed with the name of the platform it implements.  For example, 'LocalForage' is the prefix in 'LocalForageBaseDaoAdapter'.");
+            if (!Object.isConstructorFunction(Dao)) {
+                throw new BytePushers.dao.DaoException("DAO Adapter(\n\n" + Dao.name + "\n\n) constructor method must be defined.");
             }
-        }
 
-        return entityName + concreteDaoImplName;
-    };
+            if (!Object.isDefined(entityName)) {
+                throw new BytePushers.dao.DaoException("Entity Name(\n\n" + entityName + "\n\n) must be defined.");
+            }
 
-    var getEntityName = function(Entity) {
-        var entityName;
+            if (Object.isConstructorFunction(Dao)) {
+                concreteDaoImplName = Dao.name.substringBefore("LocalForageDao");
+                concreteDaoImplName = Dao.name.substringBefore("BaseDao");
+                concreteDaoImplName = Dao.name.substringBefore("Dao");
 
-        if(Object.isDefined(Entity)) {
-            throw new BytePushers.dao.GenericDaoException("Entity(" + Entity + ") constructor method must be defined.");
-        }
+                if (concreteDaoImplName.trim().length === 0) {
+                    throw new BytePushers.dao.DaoException("DAO Adapter(" + Dao.name + ") constructor method must be prefixed" +
+                        " with the name of the platform it implements.  For example, 'LocalForage' is the prefix in 'LocalForageBaseDaoAdapter'.");
+                }
+            }
 
-        if(Object.isConstructorFunction(Entity)){
-            entityName = Entity.name;
-        }
+            return entityName + concreteDaoImplName + "Dao";
+        },
+        getEntityName = function (Entity) {
+            var entityName;
 
-        return entityName;
-    };
+            if (Object.isConstructorFunction(Entity)) {
+                entityName = Entity.name;
+            } else {
+                throw new BytePushers.dao.DaoException("Entity(" + Entity + ") constructor method must be defined.");
+            }
+
+            return entityName;
+        };
 
     BytePushers = BytePushers || {};
     BytePushers.dao = BytePushers.dao ||  BytePushers.namespace("software.bytepushers.data.dao");
 
     BytePushers.dao.DaoManager = (function () {
-        var instance, registeredDaoConstructors;
+        var instance, registeredDaoConstructors = {}, dataStoreConfig;
 
-        function getDao(daoName) {
+        function mergeConfigurations(target, source) {
+            var property;
+
+            for (property in source) {
+                target[property] = source[property];
+            }
+        }
+
+        function getDao(daoName, entityConfig) {
             var dao = null;
 
-            if(typeof registeredDaoConstructors[daoName] === "object"){
-                dao = registeredDaoConstructors[daoName]
-            }
+            mergeConfigurations(dataStoreConfig, entityConfig);
 
-            if(Object.isConstructorFunction(registeredDaoConstructors[daoName])){
-                dao = new registeredDaoConstructors[daoName]();
+            if (Object.isDefined(registeredDaoConstructors[daoName])) {
+                if (typeof registeredDaoConstructors[daoName] === "object") {
+                    dao = registeredDaoConstructors[daoName];
+                }
+
+                if (Object.isConstructorFunction(registeredDaoConstructors[daoName])) {
+                    dao = new registeredDaoConstructors[daoName]();
+                }
             }
 
             return dao;
-        };
+        }
 
-        function registerDao(Entity, Dao) {
-            var entityName = getEntityName(Entity),
-                concreteDaoName = getConcreteDaoImplName(Dao, entityName),
-                concreteDaoNameImpl = concreteDaoName + "Impl",
-                generatateConcreteDaoConstructor = new Function('return function ' + concreteDaoName + '() {' +
-                    'def.useClass.call(this, def[def.class].arguments[1]); ' +
-                '}')(),
-                ConcreteDaoImplConstructor = generatateConcreteDaoConstructor();
+        function getEntityConstructor(daoConfig) {
+            if (!Object.isDefined(daoConfig)) {
+                throw new BytePushers.dao.DaoException("DAO Configuration must be defined.");
+            }
 
-            ConcreteDaoImplConstructor.prototype = BytePushers.inherit(BytePushers.GenericDaoLocalForage);
+            if (!Object.isConstructorFunction(daoConfig.Entity)) {
+               throw new BytePushers.dao.DaoException("DAO Configuration must define an Entity.");
+            }
+
+            return daoConfig.Entity;
+        }
+
+        function getDaoConstructor(daoConfig) {
+            if (!Object.isDefined(daoConfig)) {
+                throw new BytePushers.dao.DaoException("DAO Configuration must be defined.");
+            }
+
+            if (!Object.isConstructorFunction(daoConfig.Dao)) {
+                throw new BytePushers.dao.DaoException("DAO Configuration must define an DAO.");
+            }
+
+            return daoConfig.Dao;
+        }
+
+        function setAndGetDataStoreConfig(daoConfig) {
+            dataStoreConfig = daoConfig;
+            return dataStoreConfig;
+        }
+
+        /*jslint evil: true */
+        function registerDao(daoConfig) {
+            /* jshint ignore:start */
+            var Entity = getEntityConstructor(daoConfig),
+                Dao = getDaoConstructor(daoConfig),
+                entityName = getEntityName(Entity),
+                concreteDaoName = getConcreteDaoName(Dao, entityName),
+                concreteDaoNameImpl = concreteDaoName + 'Impl',
+                ConcreteDaoImplConstructor = new Function('daoConfig', 'return function ' + concreteDaoName + '() {' +
+                    'this.__proto__.superclass.apply(this, [daoConfig]); ' +
+                '}')(setAndGetDataStoreConfig(daoConfig));
+
+            ConcreteDaoImplConstructor.prototype = BytePushers.inherit(BytePushers.dao.LocalForageDao.prototype);
             ConcreteDaoImplConstructor.prototype.constructor = ConcreteDaoImplConstructor;
-            ConcreteDaoImplConstructor.prototype.superclass = BytePushers.GenericDaoLocalForage;
+            ConcreteDaoImplConstructor.prototype.superclass = BytePushers.dao.LocalForageDao;
 
             registeredDaoConstructors[concreteDaoName] = ConcreteDaoImplConstructor;
             registeredDaoConstructors[concreteDaoNameImpl] = null;
-        };
+            /* jshint ignore:end */
+        }
+        /*jslint evil: false */
 
         return {
-            getInstance:  function () {
+            getInstance: function () {
                 if (instance === undefined) {
                     instance = {
-                      getDao: getDao,
-                      registerDao: registerDao
+                        getDao: getDao,
+                        registerDao: registerDao
                     };
                 }
                 return instance;
             }
         };
-    })();
-})(window, document, BytePushers);
+    }());
+}(BytePushers));

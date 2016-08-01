@@ -11,14 +11,22 @@ require.config({
   baseUrl: '/base',
 
   paths: {
+      /*'walk': 'node_modules/acorn/dist/acorn/walk',
+      'acorn': 'node_modules/acorn/dist/acorn/acorn_loose',
+      'isDescriptor': 'node_modules/define-property/node_modules.is-descriptor/index',
+      'defineProperty': 'node_modules/define-property/index',
+      'parseFunction': 'node_modules/parse-function/index',*/
+      'localforage': 'bower_components/localforage/dist/localforage',
+      /*'es6-promise': 'bower_components/es6-promise/promise',*/
       'BytePushers': 'bower_components/bytepushers-js-core/release/bytepushers-js-core',
       'bytePushersDaoManager': 'src/main/javascript/software.bytepushers.data.dao.DaoManager',
       'bytePushersGenericDao': 'src/main/javascript/software.bytepushers.data.dao.GenericDao',
-      'bytePushersGenericDaoException': 'src/main/javascript/software.bytepushers.data.dao.GenericDaoException',
+      'bytePushersDaoException': 'src/main/javascript/software.bytepushers.data.dao.DaoException',
       'bytePushersLocalForageDao': 'src/main/javascript/software.bytepushers.data.dao.LocalForageDao',
 
       'BaseEntity': 'src/test/javascript/support/software.bytepushers.model.BaseEntity',
-      'Person': 'src/test/javascript/support/software.bytepushers.model.Person'
+      'Person': 'src/test/javascript/support/software.bytepushers.model.Person',
+      'polyfill': 'src/polyfill/object.polyfill'
   },
 
   shim: {
@@ -26,23 +34,39 @@ require.config({
           exports: 'BytePushers'
       },
       bytePushersDaoManager: {
-          deps: ['bytePushersGenericDaoException']
+          deps: ['bytePushersDaoException']
       },
       bytePushersGenericDao: {
-          deps: ['BytePushers']
+          deps: ['BytePushers', 'polyfill']
       },
-      bytePushersGenericDaoException: {
-          deps: ['bytePushersGenericDao']
+      bytePushersDaoException: {
+          deps: ['BytePushers', 'bytePushersGenericDao']
       },
       bytePushersLocalForageDao: {
-          deps: ['bytePushersGenericDao']
+          deps: ['BytePushers', /*'es6-promise', */'localforage', 'bytePushersGenericDao', 'bytePushersDaoException', 'polyfill']
       },
       BaseEntity: {
           deps: ['BytePushers']
       },
       Person: {
           deps: ['BytePushers', 'BaseEntity']
-      }
+      },
+      polyfill: {
+          deps: ['BytePushers'/*, 'parseFunction'*/]
+      }/*,
+      defineProperty: {
+          deps: ['isDescriptor']
+      },
+      parseFunction: {
+          deps: ['acorn', 'defineProperty']
+      },
+      acorn: {
+          deps: ['walk']
+      },
+      walk: {
+
+      }*/
+
   },
 
   deps: allTestFiles,

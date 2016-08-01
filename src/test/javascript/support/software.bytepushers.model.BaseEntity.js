@@ -23,7 +23,14 @@
         createdBy = (Object.isDefined(baseEntityJsonConfig) && Object.isDefined(baseEntityJsonConfig.createdBy))?
           baseEntityJsonConfig.createdBy: null,
         lastModifiedBy = (Object.isDefined(baseEntityJsonConfig) && Object.isDefined(baseEntityJsonConfig.lastModifiedBy)) ?
-          baseEntityJsonConfig.lastModifiedBy: null;
+          baseEntityJsonConfig.lastModifiedBy: null,
+        setIdAgain = function(someId) {
+          id = someId;
+        };
+
+    function setId(someId) {
+      id = someId;
+    }
 
     this.getId = function() {
       return id;
@@ -60,13 +67,87 @@
     this.formatJsonLastModifiedByProperty = function() {
       return (Object.isDefined(this.getLastModifiedBy()))? "\"" + this.getLastModifiedBy() + "\"" : null;
     };
+
+    BytePushers.models.BaseEntity.prototype.formatJsonIdProperty = function() {
+      return (Object.isNumeric(this.getId()))? this.getId() : (Object.isString(this.getId()))? "\"" + this.getId() + "\"" : null;
+    };
+
+    BytePushers.models.BaseEntity.prototype.useSerializeUIProperties = function(serializeUIProperties) {
+      return (Object.isBoolean(serializeUIProperties))? serializeUIProperties : false;
+    };
+
+    BytePushers.models.BaseEntity.prototype.shouldUseWapper = function(useWrapper) {
+      return (Object.isBoolean(useWrapper))? useWrapper : true;
+    };
+
+    BytePushers.models.BaseEntity.prototype.shouldIncludeId = function(includeId) {
+      return (Object.isBoolean(includeId))? includeId : true;
+    };
+
+    BytePushers.models.BaseEntity.prototype.toJSON = function (serializeUIProperties, useWrapper, includeId) {
+      serializeUIProperties = this.useSerializeUIProperties(serializeUIProperties);
+      useWrapper = this.shouldUseWapper(useWrapper);
+      includeId = this.shouldIncludeId(includeId);
+      var jsonId = this.formatJsonIdProperty(),
+          jsonCreatedDate = this.formatJsonCreatedDateProperty(),
+          jsonLastModifiedDate = this.formatJsonLastModifiedDateProperty(),
+          jsonCreatedBy = this.formatJsonCreatedByProperty(),
+          jsonLastModifiedBy = this.formatJsonLastModifiedByProperty(),
+          json =  ((useWrapper)? "{": "") +
+              ((includeId)? "\"id\": " + jsonId + "," : "") +
+              "\"createdDate\": " + jsonCreatedDate + "," +
+              "\"lastModifiedDate\": " + jsonLastModifiedDate + "," +
+              "\"createdBy\": " + jsonCreatedBy + "," +
+              "\"lastModifiedBy\": " + jsonLastModifiedBy +
+              ((useWrapper)? "}": "");
+      return (useWrapper)? JSON.parse(json) : json;
+    };
+
+    BytePushers.models.BaseEntity.prototype.toString = function (useWrapper, includeId) {
+      useWrapper = (Object.isBoolean(useWrapper))? useWrapper : true;
+      includeId = (Object.isBoolean(includeId))? includeId : true;
+      return  ((useWrapper)? "Base Entity {": "") +
+          ((includeId)? "id: " + this.getId() + ", " : "") +
+          "createdDate: \"" + this.getCreatedDate().toJSON() + "\", " +
+          "lastModifiedDate: \"" + this.getLastModifiedDate().toJSON() + "\", " +
+          "createdBy: \"" + this.getCreatedBy() + "\", " +
+          "lastModifiedBy: \"" + this.getLastModifiedBy() + "\"" +
+          ((useWrapper)? "}": "");
+    };
   };
 
-  BytePushers.models.BaseEntity.prototype.formatJsonIdProperty = function() {
+  /*Object.defineProperty(BytePushers.models.BaseEntity.prototype, 'formatJsonIdProperty', {
+    enumerable: false,
+    value: function() {
+      return (Object.isNumeric(this.getId()))? this.getId() : (Object.isString(this.getId()))? "\"" + this.getId() + "\"" : null;
+    }
+  });*/
+  /*BytePushers.models.BaseEntity.prototype.formatJsonIdProperty = function() {
     return (Object.isNumeric(this.getId()))? this.getId() : (Object.isString(this.getId()))? "\"" + this.getId() + "\"" : null;
-  };
+  };*/
 
-  BytePushers.models.BaseEntity.prototype.toJSON = function(serializeUIProperties, useWrapper, includeId) {
+  /*Object.defineProperty(BytePushers.models.BaseEntity.prototype, 'toJSON', {
+    enumerable: false,
+    value: function (serializeUIProperties, useWrapper, includeId) {
+      serializeUIProperties = this.useSerializeUIProperties(serializeUIProperties);
+      useWrapper = this.shouldUseWapper(useWrapper);
+      includeId = this.shouldIncludeId(includeId);
+      var jsonId = this.formatJsonIdProperty(),
+          jsonCreatedDate = this.formatJsonCreatedDateProperty(),
+          jsonLastModifiedDate = this.formatJsonLastModifiedDateProperty(),
+          jsonCreatedBy = this.formatJsonCreatedByProperty(),
+          jsonLastModifiedBy = this.formatJsonLastModifiedByProperty(),
+          json =  ((useWrapper)? "{": "") +
+              ((includeId)? "\"id\": " + jsonId + "," : "") +
+              "\"createdDate\": " + jsonCreatedDate + "," +
+              "\"lastModifiedDate\": " + jsonLastModifiedDate + "," +
+              "\"createdBy\": " + jsonCreatedBy + "," +
+              "\"lastModifiedBy\": " + jsonLastModifiedBy +
+              ((useWrapper)? "}": "");
+      return json;
+    }
+  });*/
+  /*BytePushers.models.BaseEntity.prototype.toJSON = function (serializeUIProperties, useWrapper, includeId) {
     serializeUIProperties = this.useSerializeUIProperties(serializeUIProperties);
     useWrapper = this.shouldUseWapper(useWrapper);
     includeId = this.shouldIncludeId(includeId);
@@ -83,9 +164,23 @@
         "\"lastModifiedBy\": " + jsonLastModifiedBy +
         ((useWrapper)? "}": "");
     return json;
-  };
+  };*/
 
-  BytePushers.models.BaseEntity.prototype.toString = function (useWrapper, includeId) {
+  /*Object.defineProperty(BytePushers.models.BaseEntity.prototype, 'toString', {
+    enumerable: false,
+    value: function (useWrapper, includeId) {
+      useWrapper = (Object.isBoolean(useWrapper))? useWrapper : true;
+      includeId = (Object.isBoolean(includeId))? includeId : true;
+      return  ((useWrapper)? "Base Entity {": "") +
+          ((includeId)? "id: " + this.getId() + ", " : "") +
+          "createdDate: \"" + this.getCreatedDate().toJSON() + "\", " +
+          "lastModifiedDate: \"" + this.getLastModifiedDate().toJSON() + "\", " +
+          "createdBy: \"" + this.getCreatedBy() + "\", " +
+          "lastModifiedBy: \"" + this.getLastModifiedBy() + "\"" +
+          ((useWrapper)? "}": "");
+    }
+  });*/
+  /*BytePushers.models.BaseEntity.prototype.toString = function (useWrapper, includeId) {
     useWrapper = (Object.isBoolean(useWrapper))? useWrapper : true;
     includeId = (Object.isBoolean(includeId))? includeId : true;
     return  ((useWrapper)? "Base Entity {": "") +
@@ -95,18 +190,36 @@
       "createdBy: \"" + this.getCreatedBy() + "\", " +
       "lastModifiedBy: \"" + this.getLastModifiedBy() + "\"" +
     ((useWrapper)? "}": "");
-  };
+  };*/
 
-  BytePushers.models.BaseEntity.prototype.useSerializeUIProperties = function(serializeUIProperties) {
+  /*Object.defineProperty(BytePushers.models.BaseEntity.prototype, 'useSerializeUIProperties', {
+    enumerable: false,
+    value: function(serializeUIProperties) {
+      return (Object.isBoolean(serializeUIProperties))? serializeUIProperties : false;
+    }
+  });*/
+  /*BytePushers.models.BaseEntity.prototype.useSerializeUIProperties = function(serializeUIProperties) {
     return (Object.isBoolean(serializeUIProperties))? serializeUIProperties : false;
-  };
+  };*/
 
-  BytePushers.models.BaseEntity.prototype.shouldUseWapper = function(useWrapper) {
+  /*Object.defineProperty(BytePushers.models.BaseEntity.prototype, 'shouldUseWapper', {
+    enumerable: false,
+    value: function(useWrapper) {
+      return (Object.isBoolean(useWrapper))? useWrapper : true;
+    }
+  });*/
+  /*BytePushers.models.BaseEntity.prototype.shouldUseWapper = function(useWrapper) {
     return (Object.isBoolean(useWrapper))? useWrapper : true;
-  };
+  };*/
 
-  BytePushers.models.BaseEntity.prototype.shouldIncludeId = function(includeId) {
+  /*Object.defineProperty(BytePushers.models.BaseEntity.prototype, 'shouldIncludeId', {
+    enumerable: false,
+    value: function(includeId) {
+      return (Object.isBoolean(includeId))? includeId : true;
+    }
+  });*/
+  /*BytePushers.models.BaseEntity.prototype.shouldIncludeId = function(includeId) {
     return (Object.isBoolean(includeId))? includeId : true;
-  };
+  };*/
 
 })(window, document, BytePushers);
