@@ -6,6 +6,8 @@
 /target
 /node_modules
 /bower_components
+/.idea
+*.iml
 
 
 .metadata
