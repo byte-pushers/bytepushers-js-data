@@ -3,7 +3,7 @@
 /**
  * Created by tonte on 7/20/16.
  */
-(function (BytePushers, Promise/*, localforage*/) {
+(function (BytePushers, Promise) {/*, localforage*/
     "use strict";
 
     var dataStore = null,
@@ -29,14 +29,24 @@
                 }
             }
         },
-        createDataStore = function(daoConfig) {
+        createDataStore = function (daoConfig) {
             var localForageConfig;
 
-            if (!Object.isDefined(daoConfig)) throw new BytePushers.dao.DaoException("LocalForage Config must be defined.");
-            if (!Object.isDefined(daoConfig.name)) throw new BytePushers.dao.DaoException("LocalForage Config: Data Store App Name must be defined.");
-            if (!Object.isDefined(daoConfig.version)) throw new BytePushers.dao.DaoException("LocalForage Config: Data Store Version must be defined.");
-            if (!Object.isDefined(daoConfig.storeName)) throw new BytePushers.dao.DaoException("LocalForage Config: Data Store Name must be defined.");
-            if (!Object.isDefined(daoConfig.dataStore)) throw new BytePushers.dao.DaoException("LocalForage Config: Data Store must be defined.");
+            if (!Object.isDefined(daoConfig)) {
+                throw new BytePushers.dao.DaoException("LocalForage Config must be defined.");
+            }
+            if (!Object.isDefined(daoConfig.name)) {
+                throw new BytePushers.dao.DaoException("LocalForage Config: Data Store App Name must be defined.");
+            }
+            if (!Object.isDefined(daoConfig.version)) {
+                throw new BytePushers.dao.DaoException("LocalForage Config: Data Store Version must be defined.");
+            }
+            if (!Object.isDefined(daoConfig.storeName)) {
+                throw new BytePushers.dao.DaoException("LocalForage Config: Data Store Name must be defined.");
+            }
+            if (!Object.isDefined(daoConfig.dataStore)) {
+                throw new BytePushers.dao.DaoException("LocalForage Config: Data Store must be defined.");
+            }
 
             localForageConfig = {
                 name        : daoConfig.name,
@@ -61,11 +71,11 @@
 
             return daoConfig.dataStore.createInstance(localForageConfig);
         },
-        generateNoSqlId = function(targetEntityReflection) {
+        generateNoSqlId = function (targetEntityReflection) {
             var noSqlId;
 
             if (Object.isDefined(targetEntityReflection)) {
-                if(!Object.isDefined(targetEntityReflection.getId())) {
+                if (!Object.isDefined(targetEntityReflection.getId())) {
                     noSqlId = new Date().getTime();
                     targetEntityReflection.getMethod("setId")(noSqlId);
                 } else {
@@ -75,7 +85,7 @@
 
             return noSqlId;
         },
-        ensureValidKey = function(key) {
+        ensureValidKey = function (key) {
             return key.toString();
         };
 
@@ -110,7 +120,8 @@
                 targetEntityReflection = (new BytePushers.util.Reflection()).getInstance(newEntity.constructor, newEntity.toJSON());
                 generateNoSqlId(targetEntityReflection);
 
-                dataStore.setItem(ensureValidKey(targetEntityReflection.getId()), (new newEntity.constructor(targetEntityReflection.toJSON())).toJSON()).then(function (newlyPersistedEntityStringConfig) {
+                dataStore.setItem(ensureValidKey(targetEntityReflection.getId()),
+                    (new newEntity.constructor(targetEntityReflection.toJSON())).toJSON()).then(function (newlyPersistedEntityStringConfig) {
                     return newlyPersistedEntityStringConfig;
                 }).then(function (newlyPersistedEntityConfig) {
                     var newlyPersistedEntity = dao.createEntity(newlyPersistedEntityConfig);
@@ -140,7 +151,7 @@
                 }
 
                 dataStore.getItem(ensureValidKey(entityId)).then(function (existingEntityConfig) {
-                    if(existingEntityConfig) {
+                    if (existingEntityConfig) {
                         existingEntity = dao.createEntity(existingEntityConfig);
                     }
 
@@ -156,50 +167,49 @@
     BytePushers.dao.LocalForageDao.prototype.update = function (updatedEntity) {
         var dao = this,
             promise = new Promise(function (resolve, reject) {
-            try {
-                if (!BytePushers.dao.LocalForageDao.prototype.isPrototypeOf(dao)) {
-                    throw new BytePushers.dao.DaoException("Can not call object unless in LocalForageDao Object's hierarchy prototype chain.");
+                try {
+                    if (!BytePushers.dao.LocalForageDao.prototype.isPrototypeOf(dao)) {
+                        throw new BytePushers.dao.DaoException("Can not call object unless in LocalForageDao Object's hierarchy prototype chain.");
+                    }
+
+                    validateRequiredParameter({description: "Entity", value: updatedEntity}, BytePushers.dao.DaoException, isParameterDefined);
+                    validateRequiredParameter({description: "Entity ID", value: updatedEntity.getId()},
+                        BytePushers.dao.DaoException, validateEntityId);
+                } catch (error) {
+                    reject(error);
                 }
 
-                validateRequiredParameter({description: "Entity", value: updatedEntity}, BytePushers.dao.DaoException, isParameterDefined);
-                validateRequiredParameter({description: "Entity ID", value: updatedEntity.getId()}, BytePushers.dao.DaoException, validateEntityId);
-            } catch(error) {
-                reject(error);
-            }
-
-            dataStore.setItem(ensureValidKey(updatedEntity.getId()), updatedEntity.toJSON()).then(function (updatedEntityConfig) {
-                var updatedEntity = dao.createEntity(updatedEntityConfig);
-                resolve(updatedEntity);
-            }).catch(function (error) {
-                reject(new BytePushers.dao.DaoException(error));
+                dataStore.setItem(ensureValidKey(updatedEntity.getId()), updatedEntity.toJSON()).then(function (updatedEntityConfig) {
+                    resolve(dao.createEntity(updatedEntityConfig));
+                }).catch(function (error) {
+                    reject(new BytePushers.dao.DaoException(error));
+                });
             });
-        });
 
         return promise;
-
     };
 
     BytePushers.dao.LocalForageDao.prototype.delete = function (entityId) {
         var dao = this,
             promise = new Promise(function (resolve, reject) {
-            try {
-                if (!BytePushers.dao.LocalForageDao.prototype.isPrototypeOf(dao)) {
-                    throw new BytePushers.dao.DaoException("Can not call object unless in LocalForageDao Object's hierarchy prototype chain.");
+                try {
+                    if (!BytePushers.dao.LocalForageDao.prototype.isPrototypeOf(dao)) {
+                        throw new BytePushers.dao.DaoException("Can not call object unless in LocalForageDao Object's hierarchy prototype chain.");
+                    }
+                    validateRequiredParameter({description: "Entity ID", value: entityId}, BytePushers.dao.DaoException, isParameterDefined);
+                    validateRequiredParameter({description: "Entity ID", value: entityId}, BytePushers.dao.DaoException, validateEntityId);
+                } catch (error) {
+                    reject(error);
                 }
-                validateRequiredParameter({description: "Entity ID", value: entityId}, BytePushers.dao.DaoException, isParameterDefined);
-                validateRequiredParameter({description: "Entity ID", value: entityId}, BytePushers.dao.DaoException, validateEntityId);
-            } catch (error) {
-                reject(error);
-            }
 
-            dataStore.removeItem(ensureValidKey(entityId)).then(function (config) {
-                resolve(true);
-            }).catch(function (error) {
-                reject(new BytePushers.dao.DaoException(error));
+                dataStore.removeItem(ensureValidKey(entityId)).then(function () {
+                    resolve(true);
+                }).catch(function (error) {
+                    reject(new BytePushers.dao.DaoException(error));
+                });
+
             });
-
-        });
 
         return promise;
     };
-}(BytePushers, Promise/*, localforage*/));
+}(BytePushers, Promise)); /*, localforage*/

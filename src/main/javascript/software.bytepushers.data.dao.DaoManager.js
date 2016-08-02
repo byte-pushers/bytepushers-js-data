@@ -51,7 +51,9 @@
             var property;
 
             for (property in source) {
-                target[property] = source[property];
+                if (source.hasOwnProperty(property)) {
+                    target[property] = source[property];
+                }
             }
         }
 
@@ -79,7 +81,7 @@
             }
 
             if (!Object.isConstructorFunction(daoConfig.Entity)) {
-               throw new BytePushers.dao.DaoException("DAO Configuration must define an Entity.");
+                throw new BytePushers.dao.DaoException("DAO Configuration must define an Entity.");
             }
 
             return daoConfig.Entity;
@@ -111,8 +113,7 @@
                 concreteDaoName = getConcreteDaoName(Dao, entityName),
                 concreteDaoNameImpl = concreteDaoName + 'Impl',
                 ConcreteDaoImplConstructor = new Function('daoConfig', 'return function ' + concreteDaoName + '() {' +
-                    'this.__proto__.superclass.apply(this, [daoConfig]); ' +
-                '}')(setAndGetDataStoreConfig(daoConfig));
+                    'this.__proto__.superclass.apply(this, [daoConfig]); ' + '}')(setAndGetDataStoreConfig(daoConfig));
 
             ConcreteDaoImplConstructor.prototype = BytePushers.inherit(BytePushers.dao.LocalForageDao.prototype);
             ConcreteDaoImplConstructor.prototype.constructor = ConcreteDaoImplConstructor;

@@ -15,18 +15,11 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      /*{pattern: 'node_modules/acorn/dist/walk.js', included: false},
-      {pattern: 'node_modules/acorn/dist/acorn_loose.js', included: false},
-      {pattern: 'node_modules/define-property/node_modules.is-descriptor/index.js', included: false},
-      {pattern: 'node_modules/define-property/index.js', included: false},
-      {pattern: 'node_modules/parse-function/index.js', included: false},*/
       {pattern: 'bower_components/bytepushers-js-core/release/bytepushers-js-core.js', included: false},
-      /*{pattern: 'bower_components/es6-promise/promise.js', included: false},*/
       {pattern: 'bower_components/localforage/dist/localforage.js', included: false},
       {pattern: 'src/main/javascript/**/*.js', included: false},
       {pattern: 'src/test/javascript/support/*.js', included: false},
       {pattern: 'src/test/javascript/*.spec.js', included: false},
-      {pattern: 'src/polyfill/**/*.js', included: false},
       'test-main.js'
     ],
 

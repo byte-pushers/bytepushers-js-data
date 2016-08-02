@@ -12,7 +12,7 @@
         isEntityIdValid,
         getEntityIdValidationMethod = function (daoConfig) {
             return (Object.isDefined(daoConfig) && Object.isDefined(daoConfig.entity) &&
-                    Object.isFunction(daoConfig.entity.validationMethods["isValidEntityId"])) ?
+                    Object.isFunction(daoConfig.entity.validationMethods.isValidEntityId)) ?
                     daoConfig.entityIdValidationMethod : function () { return true; };
         };
 
