@@ -2,10 +2,9 @@
  * Created by tonte on 7/17/16.
  */
 
-define(['BytePushers', /*'es6-promise', */'localforage', 'Person', 'bytePushersLocalForageDao', 'bytePushersDaoManager'], function (BytePushers, /*es6Promise, */localforage) {
+define(['BytePushers', 'localforage', 'Person', 'bytePushersLocalForageDao', 'bytePushersDaoManager'], function (BytePushers, localforage) {
     describe("BytePushers Generic DAO", function () {
         beforeAll(function () {
-            //es6Promise.polyfill();
             expect(localforage).toBeDefined();
         });
 
