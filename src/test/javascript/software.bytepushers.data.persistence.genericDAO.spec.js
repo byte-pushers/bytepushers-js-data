@@ -71,7 +71,7 @@ define(['BytePushers', 'localforage', 'Person', 'bytePushersLocalForageDao', 'by
                                 if(persistedPerson) {
                                     fail("expected to not find the same person after delete operation.");
                                 }
-                                expect(persistedPerson).not.toBeDefined();
+                                //expect(persistedPerson).not.toBeDefined();
                             }, function(error) {
                                 expect(error).toBeDefined();
                             })
