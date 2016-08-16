@@ -61,7 +61,7 @@
                     "\"lastName\": " + jsonLastName + "," +
                     "\"birthDate\": " + jsonBirthDate + "," +
                     BytePushers.models.Person.prototype.superclass.prototype.toJSON.apply(this, [serializeUIProperties, false, false]) +
-                    "}";
+                "}";
             return JSON.parse(json);
         };
 
@@ -73,7 +73,7 @@
                 "lastName: \"" + this.getLastName() + "\", " +
                 "birthDate: \"" + this.getBirthDate() + "\", " +
                 BytePushers.models.Person.prototype.superclass.prototype.toString.apply(this, [false, false]) +
-                "}";
+            "}";
         };
     };
 
@@ -92,66 +92,4 @@
         value: BytePushers.models.BaseEntity
     });
     //BytePushers.models.Person.prototype.superclass = BytePushers.models.BaseEntity;
-
-    /*Object.defineProperty(BytePushers.models.Person.prototype, 'toJSON', {
-        enumerable: false,
-        value: function (serializeUIProperties) {
-            serializeUIProperties = this.useSerializeUIProperties(serializeUIProperties);
-            var jsonId = this.formatJsonIdProperty(),
-                jsonFirstName = (Object.isString(this.getFirstName()))? "\"" + this.getFirstName() + "\"" : null,
-                jsonMiddleName = (Object.isString(this.getMiddleName()))? "\"" + this.getMiddleName() + "\"" : null,
-                jsonLastName = (Object.isString(this.getLastName()))? "\"" + this.getLastName() + "\"" : null,
-                jsonBirthDate = (Object.isDate(this.getBirthDate()))? "\"" + this.getBirthDate().toJSON() + "\"" : null,
-                json = "{" +
-                    "\"id\": " + jsonId + "," +
-                    "\"firstName\": " + jsonFirstName + "," +
-                    "\"middleName\": " + jsonMiddleName+ "," +
-                    "\"lastName\": " + jsonLastName + "," +
-                    "\"birthDate\": " + jsonBirthDate + "," +
-                    this.__proto__.__proto__.toJSON.apply(this, [serializeUIProperties, false, false]) +
-                "}";
-            return json;
-        }
-    });*/
-    /*BytePushers.models.Person.prototype.toJSON = function(serializeUIProperties) {
-        serializeUIProperties = this.useSerializeUIProperties(serializeUIProperties);
-        var jsonId = this.formatJsonIdProperty(),
-            jsonFirstName = (Object.isString(this.getFirstName()))? "\"" + this.getFirstName() + "\"" : null,
-            jsonMiddleName = (Object.isString(this.getMiddleName()))? "\"" + this.getMiddleName() + "\"" : null,
-            jsonLastName = (Object.isString(this.getLastName()))? "\"" + this.getLastName() + "\"" : null,
-            jsonBirthDate = (Object.isDate(this.getBirthDate()))? "\"" + this.getBirthDate().toJSON() + "\"" : null,
-            json = "{" +
-                "\"id\": " + jsonId + "," +
-                "\"firstName\": " + jsonFirstName + "," +
-                "\"middleName\": " + jsonMiddleName+ "," +
-                "\"lastName\": " + jsonLastName + "," +
-                "\"birthDate\": " + jsonBirthDate + "," +
-                BytePushers.models.Person.prototype.superclass.prototype.toJSON.apply(this, [serializeUIProperties, false, false]) +
-            "}";
-        return json;
-    };*/
-
-    /*Object.defineProperty(BytePushers.models.Person.prototype, 'toString', {
-        enumerable: false,
-        value: function () {
-            return  "Work Order {" +
-                "id: " + this.getId() + ", " +
-                "firstName: \"" + this.getFirstName() + "\", " +
-                "middleName: " + this.getMiddleName() + ", " +
-                "lastName: \"" + this.getLastName() + "\", " +
-                "birthDate: \"" + this.getBirthDate() + "\", " +
-                BytePushers.models.Person.prototype.superclass.prototype.toString.apply(this, [false, false]) +
-            "}";
-        }
-    });*/
-    /*BytePushers.models.Person.prototype.toString = function () {
-        return  "Work Order {" +
-            "id: " + this.getId() + ", " +
-            "firstName: \"" + this.getFirstName() + "\", " +
-            "middleName: " + this.getMiddleName() + ", " +
-            "lastName: \"" + this.getLastName() + "\", " +
-            "birthDate: \"" + this.getBirthDate() + "\", " +
-            BytePushers.models.Person.prototype.superclass.prototype.toString.apply(this, [false, false]) +
-        "}";
-    };*/
 })(window, document, BytePushers);
