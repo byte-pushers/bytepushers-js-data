@@ -27,7 +27,14 @@ define(['BytePushers', 'localforage', 'Person', 'bytePushersLocalForageDao', 'by
                     description : 'PMMS Mobile App Data Store',
                     Entity      : BytePushers.models.Person,
                     Dao         : BytePushers.dao.LocalForageDao,
-                    dataStore   : localforage
+                    dataStore   : localforage,
+                    entityConfigs: {
+                        personEntityConfig: {
+                            entityIdValidationMethod: function(someId) {
+                                return true;
+                            }
+                        }
+                    }
                 },
                 personDao,
                 expectedValues = {
@@ -89,7 +96,7 @@ define(['BytePushers', 'localforage', 'Person', 'bytePushersLocalForageDao', 'by
             expect(BytePushers.dao.DaoManager).toBeDefined();
             expect(BytePushers.dao.DaoManager.getInstance()).toBeDefined();
             BytePushers.dao.DaoManager.getInstance().registerDao(daoConfig);
-            personDao = BytePushers.dao.DaoManager.getInstance().getDao("PersonLocalForageDao", personEntityConfig);
+            personDao = BytePushers.dao.DaoManager.getInstance().getDao("PersonLocalForageDao");
 
             expect(person.getId()).toBeNull();
             createPerson(person).then(readPerson).then(updatePerson).then(deletePerson).then(end).catch(function(error) {

@@ -164,6 +164,88 @@
         return promise;
     };
 
+    BytePushers.dao.LocalForageDao.prototype.getItems = function (keys) {
+        var dao = this,
+            existingEntities = [],
+            promise = new Promise(function (resolve, reject) {
+
+                keys = (Object.isArray(keys)) ? keys : [];
+
+                if (keys.length > 0) {
+                    dataStore.getItems(keys).then(function (existingEntityConfigs) {
+                        if (Object.isArray(existingEntityConfigs)) {
+                            existingEntityConfigs.forEach(function (existingEntityConfig) {
+                                existingEntities.push(dao.createEntity(existingEntityConfig));
+                            });
+                        }
+
+                        resolve(existingEntities);
+                    }).catch(function (error) {
+                        reject(new BytePushers.dao.DaoException(error));
+                    });
+                } else {
+                    resolve(existingEntities);
+                }
+            });
+
+        return promise;
+    };
+
+    BytePushers.dao.LocalForageDao.prototype.setItems = function (items) {
+        var dao = this,
+            existingEntities = [],
+            promise = new Promise(function (resolve, reject) {
+
+                items = (Object.isArray(items)) ? items : [];
+
+                if (keys.length > 0) {
+                    dataStore.getItems(keys).then(function (existingEntityConfigs) {
+                        if (Object.isArray(existingEntityConfigs)) {
+                            existingEntityConfigs.forEach(function(existingEntityConfig) {
+                                existingEntities.push(dao.createEntity(existingEntityConfig));
+                            });
+                        }
+
+                        resolve(existingEntities);
+                    }).catch(function (error) {
+                        reject(new BytePushers.dao.DaoException(error));
+                    });
+                } else {
+                    resolve(existingEntities);
+                }
+            });
+
+        return promise;
+    };
+
+    BytePushers.dao.LocalForageDao.prototype.findById = function (entityId) {
+        var promise = new Promise(function (resolve, reject) {
+                BytePushers.dao.LocalForageDao.read(entityId).then(function(foundEntity) {
+                    resolve(foundEntity);
+                }).catch(function(error) {
+                    resolve(null);
+                });
+            });
+
+        return promise;
+    };
+
+    BytePushers.dao.LocalForageDao.prototype.find = function (criteria, limit) {
+        var foundEntities = [],
+            promise = new Promise(function (resolve, reject) {
+                BytePushers.dao.LocalForageDao.find(criteria, limit).then(function(foundEntityConfigs) {
+                    foundEntityConfigs.forEach(function(foundEntityConfig) {
+                        foundEntities.push(dao.createEntity(foundEntityConfig));
+                    });
+                    resolve(foundEntities);
+                }).catch(function(error) {
+                    resolve(foundEntities);
+                });
+            });
+
+        return promise;
+    };
+
     BytePushers.dao.LocalForageDao.prototype.update = function (updatedEntity) {
         var dao = this,
             promise = new Promise(function (resolve, reject) {
