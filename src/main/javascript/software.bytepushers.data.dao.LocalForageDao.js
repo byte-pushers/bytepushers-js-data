@@ -1,5 +1,6 @@
-/*global BytePushers, Promise*/
 /* jshint -W108, -W109 */
+/* exported reject, error */
+/*global console, BytePushers*/
 /**
  * Created by tonte on 7/20/16.
  */
@@ -198,10 +199,10 @@
 
                 items = (Object.isArray(items)) ? items : [];
 
-                if (keys.length > 0) {
-                    dataStore.getItems(keys).then(function (existingEntityConfigs) {
+                if (items.length > 0) {
+                    dataStore.getItems(items).then(function (existingEntityConfigs) {
                         if (Object.isArray(existingEntityConfigs)) {
-                            existingEntityConfigs.forEach(function(existingEntityConfig) {
+                            existingEntityConfigs.forEach(function (existingEntityConfig) {
                                 existingEntities.push(dao.createEntity(existingEntityConfig));
                             });
                         }
@@ -218,34 +219,46 @@
         return promise;
     };
 
+    /*jshint unused:true*/
+    /*jslint unparam: true*/
     BytePushers.dao.LocalForageDao.prototype.findById = function (entityId) {
         var promise = new Promise(function (resolve, reject) {
-                BytePushers.dao.LocalForageDao.read(entityId).then(function(foundEntity) {
+                //jshint unused:false
+                BytePushers.dao.LocalForageDao.read(entityId).then(function (foundEntity) {
                     resolve(foundEntity);
-                }).catch(function(error) {
+                }).catch(function (error) {
                     resolve(null);
                 });
             });
 
         return promise;
     };
+    /*jslint unparam: false*/
+    /*jshint unused:false*/
 
+    /*jshint unused:true*/
+    /*jslint unparam: true*/
     BytePushers.dao.LocalForageDao.prototype.find = function (criteria, limit) {
-        var foundEntities = [],
+        var dao = this,
+            foundEntities = [],
             promise = new Promise(function (resolve, reject) {
-                BytePushers.dao.LocalForageDao.find(criteria, limit).then(function(foundEntityConfigs) {
-                    foundEntityConfigs.forEach(function(foundEntityConfig) {
+                //jshint unused:false
+                BytePushers.dao.LocalForageDao.find(criteria, limit).then(function (foundEntityConfigs) {
+                    foundEntityConfigs.forEach(function (foundEntityConfig) {
                         foundEntities.push(dao.createEntity(foundEntityConfig));
                     });
                     resolve(foundEntities);
-                }).catch(function(error) {
+                }).catch(function (error) {
                     resolve(foundEntities);
                 });
             });
 
         return promise;
     };
+    /*jslint unparam: false*/
+    /*jshint unused:false*/
 
+    /*jshint unused:true*/
     BytePushers.dao.LocalForageDao.prototype.update = function (updatedEntity) {
         var dao = this,
             promise = new Promise(function (resolve, reject) {
@@ -270,6 +283,7 @@
 
         return promise;
     };
+    /*jshint unused:false*/
 
     BytePushers.dao.LocalForageDao.prototype.delete = function (entityId) {
         var dao = this,
