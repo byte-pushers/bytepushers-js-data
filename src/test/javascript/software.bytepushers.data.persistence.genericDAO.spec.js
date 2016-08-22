@@ -25,7 +25,7 @@ define(['BytePushers', 'localforage', 'Person', 'bytePushersLocalForageDao', 'by
                     version     : 1.0,
                     storeName   : 'pmms-mobile-app-data-store', // Should be alphanumeric, with underscores.
                     description : 'PMMS Mobile App Data Store',
-                    Entity      : BytePushers.models.Person,
+                    Entity    : BytePushers.models.Person,
                     Dao         : BytePushers.dao.LocalForageDao,
                     dataStore   : localforage,
                     entityConfigs: {

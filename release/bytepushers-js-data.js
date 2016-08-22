@@ -18,11 +18,11 @@ angular.module('software.bytepushers.data.provider').provider('DataProvider', fu
         return BytePushers.dao.DaoManager.getInstance();
     };
 
-    this.setDaoConfig = function (jsonDaoConfig) {
+    this.setDataProviderConfig = function (jsonDaoConfig) {
         daoConfig = jsonDaoConfig;
     };
 
-    this.getDaoConfig = function () {
+    this.getDataProviderConfig = function () {
         return daoConfig;
     };
 });;/*global window, document, BytePushers*/
