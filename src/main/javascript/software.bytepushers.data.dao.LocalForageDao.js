@@ -79,7 +79,7 @@
             var noSqlId;
 
             if (Object.isDefined(targetEntityReflection)) {
-                if(BytePushers.implementsInterface(targetEntityReflection, "getNoSqlId")) {
+                if (BytePushers.implementsInterface(targetEntityReflection, "getNoSqlId")) {
                     noSqlId = targetEntityReflection.getNoSqlId();
                 } else {
                     if (!Object.isDefined(targetEntityReflection.getId())) {
@@ -207,9 +207,9 @@
                 items = (Object.isArray(items)) ? items : [];
 
                 if (items.length > 0) {
-                    items.forEach(function(item) {
-                       item.key = ensureValidKey(item.key);
-                       item.value = item.value.toJSON();
+                    items.forEach(function (item) {
+                        item.key = ensureValidKey(item.key);
+                        item.value = item.value.toJSON();
                     });
                     dataStore.setItems(items).then(function (existingEntityConfigs) {
                         if (Object.isArray(existingEntityConfigs)) {
