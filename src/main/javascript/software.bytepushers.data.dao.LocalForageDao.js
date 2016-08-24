@@ -72,15 +72,22 @@
 
             return daoConfig.dataStore.createInstance(localForageConfig);
         },
+        someRandomNumber = function (max) {
+            return Math.floor((Math.random() * max) + 1);
+        },
         generateNoSqlId = function (targetEntityReflection) {
             var noSqlId;
 
             if (Object.isDefined(targetEntityReflection)) {
-                if (!Object.isDefined(targetEntityReflection.getId())) {
-                    noSqlId = new Date().getTime();
-                    targetEntityReflection.getMethod("setId")(noSqlId);
+                if(BytePushers.implementsInterface(targetEntityReflection, "getNoSqlId")) {
+                    noSqlId = targetEntityReflection.getNoSqlId();
                 } else {
-                    noSqlId = targetEntityReflection.getId();
+                    if (!Object.isDefined(targetEntityReflection.getId())) {
+                        noSqlId = new Date().getTime() + someRandomNumber(9999999);
+                        targetEntityReflection.getMethod("setId")(noSqlId);
+                    } else {
+                        noSqlId = targetEntityReflection.getId();
+                    }
                 }
             }
 
@@ -200,7 +207,11 @@
                 items = (Object.isArray(items)) ? items : [];
 
                 if (items.length > 0) {
-                    dataStore.getItems(items).then(function (existingEntityConfigs) {
+                    items.forEach(function(item) {
+                       item.key = ensureValidKey(item.key);
+                       item.value = item.value.toJSON();
+                    });
+                    dataStore.setItems(items).then(function (existingEntityConfigs) {
                         if (Object.isArray(existingEntityConfigs)) {
                             existingEntityConfigs.forEach(function (existingEntityConfig) {
                                 existingEntities.push(dao.createEntity(existingEntityConfig));
@@ -243,7 +254,7 @@
             foundEntities = [],
             promise = new Promise(function (resolve, reject) {
                 //jshint unused:false
-                BytePushers.dao.LocalForageDao.find(criteria, limit).then(function (foundEntityConfigs) {
+                dataStore.find(criteria, limit).then(function (foundEntityConfigs) {
                     foundEntityConfigs.forEach(function (foundEntityConfig) {
                         foundEntities.push(dao.createEntity(foundEntityConfig));
                     });
