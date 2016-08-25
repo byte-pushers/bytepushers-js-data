@@ -1,7 +1,7 @@
 /**
  * Created by tonte on 8/16/16.
  */
-/*global angular, localforage, BytePushers, localforageFind*/
+/*global angular, localforage, BytePushers*/
 /* jshint -W108, -W109 */
 angular.module('software.bytepushers.data.provider', []);
 angular.module('software.bytepushers.data.provider').provider('DataProvider', function () {
@@ -20,8 +20,6 @@ angular.module('software.bytepushers.data.provider').provider('DataProvider', fu
         if (angular.isArray(dataProviderConfig.entities) && dataProviderConfig.entities.length === 0) {
             throw new BytePushers.dao.DaoException("No DAO Entity Configurations defined.");
         }
-
-        localforageFind(localforage);
 
         dataProviderConfig.entities.forEach(function (entityClassName) {
             BytePushers.dao.DaoManager.getInstance().registerDao({
@@ -151,8 +149,6 @@ angular.module('software.bytepushers.data.provider').provider('DataProvider', fu
                     }
                 }
             }
-
-
 
             function getEntityConstructor(daoConfig) {
                 if (!Object.isDefined(daoConfig)) {
@@ -309,7 +305,7 @@ angular.module('software.bytepushers.data.provider').provider('DataProvider', fu
 
 }(BytePushers));;/* jshint -W108, -W109 */
 /* exported reject, error */
-/*global console, BytePushers*/
+/*global console, BytePushers, localforageFind*/
 /**
  * Created by tonte on 7/20/16.
  */
@@ -340,7 +336,8 @@ angular.module('software.bytepushers.data.provider').provider('DataProvider', fu
             }
         },
         createDataStore = function (daoConfig) {
-            var localForageConfig;
+            var localForageConfig,
+                decoratedDataStore;
 
             if (!Object.isDefined(daoConfig)) {
                 throw new BytePushers.dao.DaoException("LocalForage Config must be defined.");
@@ -373,13 +370,9 @@ angular.module('software.bytepushers.data.provider').provider('DataProvider', fu
                 localForageConfig.size = daoConfig.size;
             }
 
-            /*if(localforage.config(localForageConfig)) {
-                return localforage;
-            } else {
-                return null;
-            }*/
-
-            return daoConfig.dataStore.createInstance(localForageConfig);
+            decoratedDataStore = daoConfig.dataStore.createInstance(localForageConfig);
+            localforageFind(decoratedDataStore);
+            return decoratedDataStore;
         },
         someRandomNumber = function (max) {
             return Math.floor((Math.random() * max) + 1);
