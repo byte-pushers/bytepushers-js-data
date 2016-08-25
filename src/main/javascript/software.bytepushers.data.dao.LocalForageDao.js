@@ -92,7 +92,7 @@
         },
         ensureValidKey = function (key) {
             return (typeof key === "string" || key instanceof String || typeof key === "number" || key instanceof Number) ?
-                key.toString() : key.toJSON();
+                    key.toString() : key.toJSON();
         };
 
     BytePushers = BytePushers || {};
