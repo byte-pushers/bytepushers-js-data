@@ -396,7 +396,8 @@ angular.module('software.bytepushers.data.provider').provider('DataProvider', fu
             return noSqlId;
         },
         ensureValidKey = function (key) {
-            return key.toString();
+            return (typeof key === "string" || key instanceof String || typeof key === "number" || key instanceof Number) ?
+                    key.toString() : key.toJSON();
         };
 
     BytePushers = BytePushers || {};
