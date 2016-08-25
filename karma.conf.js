@@ -17,6 +17,7 @@ module.exports = function(config) {
     files: [
       {pattern: 'bower_components/bytepushers-js-core/release/bytepushers-js-core.js', included: false},
       {pattern: 'bower_components/localforage/dist/localforage.js', included: false},
+      {pattern: 'bower_components/localforage-find/index.js', included: false},
       {pattern: 'src/main/javascript/**/*.js', included: false},
       {pattern: 'src/test/javascript/support/*.js', included: false},
       {pattern: 'src/test/javascript/*.spec.js', included: false},

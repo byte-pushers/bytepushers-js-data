@@ -12,6 +12,7 @@ require.config({
 
   paths: {
       'localforage': 'bower_components/localforage/dist/localforage',
+      'localforageFind': 'bower_components/localforage-find/index',
       'BytePushers': 'bower_components/bytepushers-js-core/release/bytepushers-js-core',
       'bytePushersDaoManager': 'src/main/javascript/software.bytepushers.data.dao.DaoManager',
       'bytePushersGenericDao': 'src/main/javascript/software.bytepushers.data.dao.GenericDao',

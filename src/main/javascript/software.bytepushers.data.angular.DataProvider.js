@@ -1,7 +1,7 @@
 /**
  * Created by tonte on 8/16/16.
  */
-/*global angular, localforage, BytePushers, localforageFind*/
+/*global angular, localforage, BytePushers*/
 /* jshint -W108, -W109 */
 angular.module('software.bytepushers.data.provider', []);
 angular.module('software.bytepushers.data.provider').provider('DataProvider', function () {

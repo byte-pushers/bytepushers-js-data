@@ -1,6 +1,6 @@
 /* jshint -W108, -W109 */
 /* exported reject, error */
-/*global console, BytePushers*/
+/*global console, BytePushers, localforageFind*/
 /**
  * Created by tonte on 7/20/16.
  */
@@ -31,7 +31,8 @@
             }
         },
         createDataStore = function (daoConfig) {
-            var localForageConfig;
+            var localForageConfig,
+                decoratedDataStore;
 
             if (!Object.isDefined(daoConfig)) {
                 throw new BytePushers.dao.DaoException("LocalForage Config must be defined.");
@@ -64,7 +65,9 @@
                 localForageConfig.size = daoConfig.size;
             }
 
-            return localforageFind(daoConfig.dataStore.createInstance(localForageConfig));
+            decoratedDataStore = daoConfig.dataStore.createInstance(localForageConfig);
+            localforageFind(decoratedDataStore);
+            return decoratedDataStore;
         },
         someRandomNumber = function (max) {
             return Math.floor((Math.random() * max) + 1);

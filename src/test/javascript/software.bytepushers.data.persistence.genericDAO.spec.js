@@ -2,7 +2,7 @@
  * Created by tonte on 7/17/16.
  */
 
-define(['BytePushers', 'localforage', 'Person', 'bytePushersLocalForageDao', 'bytePushersDaoManager'], function (BytePushers, localforage) {
+define(['BytePushers', 'localforage', 'localforageFind', 'Person', 'bytePushersLocalForageDao', 'bytePushersDaoManager'], function (BytePushers, localforage, localforageFind) {
     describe("BytePushers Generic DAO", function () {
         beforeAll(function () {
             expect(localforage).toBeDefined();
