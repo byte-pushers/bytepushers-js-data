@@ -64,13 +64,7 @@
                 localForageConfig.size = daoConfig.size;
             }
 
-            /*if(localforage.config(localForageConfig)) {
-                return localforage;
-            } else {
-                return null;
-            }*/
-
-            return daoConfig.dataStore.createInstance(localForageConfig);
+            return localforageFind(daoConfig.dataStore.createInstance(localForageConfig));
         },
         someRandomNumber = function (max) {
             return Math.floor((Math.random() * max) + 1);
