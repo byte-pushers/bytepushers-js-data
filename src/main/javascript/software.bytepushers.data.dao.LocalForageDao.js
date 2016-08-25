@@ -91,7 +91,7 @@
             return noSqlId;
         },
         ensureValidKey = function (key) {
-            return (typeof key === "string" || key instanceof String) ? key.toString(): key.toJSON();
+            return (typeof key === "string" || key instanceof String) ? key.toString() : key.toJSON();
         };
 
     BytePushers = BytePushers || {};
