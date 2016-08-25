@@ -1,29 +1,55 @@
 /**
  * Created by tonte on 8/16/16.
  */
-/*global angular, BytePushers*/
+/*global angular, localforage, BytePushers, localforageFind*/
 /* jshint -W108, -W109 */
 angular.module('software.bytepushers.data.provider', []);
 angular.module('software.bytepushers.data.provider').provider('DataProvider', function () {
     "use strict";
-    var daoConfig;
+    var dataProviderConfig;
 
     this.$get = function () {
-        if (!angular.isDefined(daoConfig)) {
-            throw new BytePushers.dao.DaoException("No DAO Configuration definded.");
+        if (!angular.isDefined(dataProviderConfig)) {
+            throw new BytePushers.dao.DaoException("No DAO Configuration defined.");
         }
 
-        BytePushers.dao.DaoManager.getInstance().registerDao(daoConfig);
+        if (!angular.isArray(dataProviderConfig.entities)) {
+            throw new BytePushers.dao.DaoException("No DAO Entity Configurations defined.");
+        }
 
+        if (angular.isArray(dataProviderConfig.entities) && dataProviderConfig.entities.length === 0) {
+            throw new BytePushers.dao.DaoException("No DAO Entity Configurations defined.");
+        }
+
+        dataProviderConfig.entities.forEach(function (entityClassName) {
+            BytePushers.dao.DaoManager.getInstance().registerDao({
+                name        : 'pmms-mobile-app',
+                version     : 1.0,
+                storeName   : 'pmms-mobile-app-data-store', // Should be alphanumeric, with underscores.
+                description : 'PMMS Mobile App Data Store',
+                Entity      : entityClassName,
+                Dao         : BytePushers.dao.LocalForageDao,
+                dataStore   : localforage,
+                entityConfigs: {
+                    personEntityConfig: {
+                        entityIdValidationMethod: function () {
+                            return true;
+                        }
+                    }
+                }
+            });
+        });
+
+        localforageFind(localforage);
         return BytePushers.dao.DaoManager.getInstance();
     };
 
-    this.setDaoConfig = function (jsonDaoConfig) {
-        daoConfig = jsonDaoConfig;
+    this.setDataProviderConfig = function (jsonDaoConfig) {
+        dataProviderConfig = jsonDaoConfig;
     };
 
-    this.getDaoConfig = function () {
-        return daoConfig;
+    this.getDataProviderConfig = function () {
+        return dataProviderConfig;
     };
 });;/*global window, document, BytePushers*/
 /* jshint -W108, -W109 */
@@ -105,6 +131,9 @@ angular.module('software.bytepushers.data.provider').provider('DataProvider', fu
 
         function mergeConfigurations(target, source) {
             var property;
+
+            target = (Object.isDefined(target)) ? target : {};
+            source = (Object.isDefined(source)) ? source : {};
 
             for (property in source) {
                 if (source.hasOwnProperty(property)) {
@@ -193,10 +222,7 @@ angular.module('software.bytepushers.data.provider').provider('DataProvider', fu
             }
         };
     }());
-}(BytePushers));;/**
- * Created by tonte on 7/19/16.
- */
-;/*global BytePushers*/
+}(BytePushers));;/*global BytePushers*/
 /* jshint -W108, -W109, unused:vars*/
 /**
  * Created by tonte on 7/17/16.
@@ -270,8 +296,9 @@ angular.module('software.bytepushers.data.provider').provider('DataProvider', fu
     };
     /*jshint unused:false*/
 
-}(BytePushers));;/*global BytePushers, Promise*/
-/* jshint -W108, -W109 */
+}(BytePushers));;/* jshint -W108, -W109 */
+/* exported reject, error */
+/*global console, BytePushers*/
 /**
  * Created by tonte on 7/20/16.
  */
@@ -343,15 +370,22 @@ angular.module('software.bytepushers.data.provider').provider('DataProvider', fu
 
             return daoConfig.dataStore.createInstance(localForageConfig);
         },
+        someRandomNumber = function (max) {
+            return Math.floor((Math.random() * max) + 1);
+        },
         generateNoSqlId = function (targetEntityReflection) {
             var noSqlId;
 
             if (Object.isDefined(targetEntityReflection)) {
-                if (!Object.isDefined(targetEntityReflection.getId())) {
-                    noSqlId = new Date().getTime();
-                    targetEntityReflection.getMethod("setId")(noSqlId);
+                if (BytePushers.implementsInterface(targetEntityReflection, "getNoSqlId")) {
+                    noSqlId = targetEntityReflection.getNoSqlId();
                 } else {
-                    noSqlId = targetEntityReflection.getId();
+                    if (!Object.isDefined(targetEntityReflection.getId())) {
+                        noSqlId = new Date().getTime() + someRandomNumber(9999999);
+                        targetEntityReflection.getMethod("setId")(noSqlId);
+                    } else {
+                        noSqlId = targetEntityReflection.getId();
+                    }
                 }
             }
 
@@ -436,6 +470,104 @@ angular.module('software.bytepushers.data.provider').provider('DataProvider', fu
         return promise;
     };
 
+    BytePushers.dao.LocalForageDao.prototype.getItems = function (keys) {
+        var dao = this,
+            existingEntities = [],
+            promise = new Promise(function (resolve, reject) {
+
+                keys = (Object.isArray(keys)) ? keys : [];
+
+                if (keys.length > 0) {
+                    dataStore.getItems(keys).then(function (existingEntityConfigs) {
+                        if (Object.isArray(existingEntityConfigs)) {
+                            existingEntityConfigs.forEach(function (existingEntityConfig) {
+                                existingEntities.push(dao.createEntity(existingEntityConfig));
+                            });
+                        }
+
+                        resolve(existingEntities);
+                    }).catch(function (error) {
+                        reject(new BytePushers.dao.DaoException(error));
+                    });
+                } else {
+                    resolve(existingEntities);
+                }
+            });
+
+        return promise;
+    };
+
+    BytePushers.dao.LocalForageDao.prototype.setItems = function (items) {
+        var dao = this,
+            existingEntities = [],
+            promise = new Promise(function (resolve, reject) {
+
+                items = (Object.isArray(items)) ? items : [];
+
+                if (items.length > 0) {
+                    items.forEach(function (item) {
+                        item.key = ensureValidKey(item.key);
+                        item.value = item.value.toJSON();
+                    });
+                    dataStore.setItems(items).then(function (existingEntityConfigs) {
+                        if (Object.isArray(existingEntityConfigs)) {
+                            existingEntityConfigs.forEach(function (existingEntityConfig) {
+                                existingEntities.push(dao.createEntity(existingEntityConfig));
+                            });
+                        }
+
+                        resolve(existingEntities);
+                    }).catch(function (error) {
+                        reject(new BytePushers.dao.DaoException(error));
+                    });
+                } else {
+                    resolve(existingEntities);
+                }
+            });
+
+        return promise;
+    };
+
+    /*jshint unused:true*/
+    /*jslint unparam: true*/
+    BytePushers.dao.LocalForageDao.prototype.findById = function (entityId) {
+        var promise = new Promise(function (resolve, reject) {
+                //jshint unused:false
+                BytePushers.dao.LocalForageDao.read(entityId).then(function (foundEntity) {
+                    resolve(foundEntity);
+                }).catch(function (error) {
+                    resolve(null);
+                });
+            });
+
+        return promise;
+    };
+    /*jslint unparam: false*/
+    /*jshint unused:false*/
+
+    /*jshint unused:true*/
+    /*jslint unparam: true*/
+    BytePushers.dao.LocalForageDao.prototype.find = function (criteria, limit) {
+        var dao = this,
+            foundEntities = [],
+            promise = new Promise(function (resolve, reject) {
+                //jshint unused:false
+                dataStore.find(criteria, limit).then(function (foundEntityConfigs) {
+                    foundEntityConfigs.forEach(function (foundEntityConfig) {
+                        foundEntities.push(dao.createEntity(foundEntityConfig));
+                    });
+                    resolve(foundEntities);
+                }).catch(function (error) {
+                    resolve(foundEntities);
+                });
+            });
+
+        return promise;
+    };
+    /*jslint unparam: false*/
+    /*jshint unused:false*/
+
+    /*jshint unused:true*/
     BytePushers.dao.LocalForageDao.prototype.update = function (updatedEntity) {
         var dao = this,
             promise = new Promise(function (resolve, reject) {
@@ -460,6 +592,7 @@ angular.module('software.bytepushers.data.provider').provider('DataProvider', fu
 
         return promise;
     };
+    /*jshint unused:false*/
 
     BytePushers.dao.LocalForageDao.prototype.delete = function (entityId) {
         var dao = this,
@@ -484,4 +617,32 @@ angular.module('software.bytepushers.data.provider').provider('DataProvider', fu
 
         return promise;
     };
-}(BytePushers, Promise)); /*, localforage*/
+}(BytePushers, Promise)); /*, localforage*/;/**
+ * Created by tonte on 8/16/16.
+ */
+/*global window, document, BytePushers*/
+/* jshint -W108, -W109 */
+(function (window, BytePushers) {
+    "use strict";
+    if (window.BytePushers !== undefined && window.BytePushers !== null) {
+        BytePushers = window.BytePushers;
+    } else {
+        window.BytePushers = {};
+        BytePushers = window.BytePushers;
+    }
+
+    BytePushers.data = BytePushers.data ||  BytePushers.namespace("software.bytepushers.data.data");
+    BytePushers.data.DataException = function (message) {
+        //Error.call(this, message);
+        BytePushers.data.DataException.prototype.superclass.apply(this, [message]);
+
+        this.name = "BytePushers.data.DataException";
+        this.message = message;
+    };
+    BytePushers.data.DataException.prototype = BytePushers.inherit(Error.prototype);
+    BytePushers.data.DataException.prototype.constructor = BytePushers.data.DataException;
+    BytePushers.data.DataException.prototype.superclass = Error;
+    BytePushers.data.DataException.prototype.toString = function () {
+        return this.name + "(" + this.message + ")";
+    };
+}(window, BytePushers));

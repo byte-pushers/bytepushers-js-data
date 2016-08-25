@@ -1,5 +1,6 @@
-/*global BytePushers, Promise*/
 /* jshint -W108, -W109 */
+/* exported reject, error */
+/*global console, BytePushers*/
 /**
  * Created by tonte on 7/20/16.
  */
@@ -71,15 +72,22 @@
 
             return daoConfig.dataStore.createInstance(localForageConfig);
         },
+        someRandomNumber = function (max) {
+            return Math.floor((Math.random() * max) + 1);
+        },
         generateNoSqlId = function (targetEntityReflection) {
             var noSqlId;
 
             if (Object.isDefined(targetEntityReflection)) {
-                if (!Object.isDefined(targetEntityReflection.getId())) {
-                    noSqlId = new Date().getTime();
-                    targetEntityReflection.getMethod("setId")(noSqlId);
+                if (BytePushers.implementsInterface(targetEntityReflection, "getNoSqlId")) {
+                    noSqlId = targetEntityReflection.getNoSqlId();
                 } else {
-                    noSqlId = targetEntityReflection.getId();
+                    if (!Object.isDefined(targetEntityReflection.getId())) {
+                        noSqlId = new Date().getTime() + someRandomNumber(9999999);
+                        targetEntityReflection.getMethod("setId")(noSqlId);
+                    } else {
+                        noSqlId = targetEntityReflection.getId();
+                    }
                 }
             }
 
@@ -164,6 +172,104 @@
         return promise;
     };
 
+    BytePushers.dao.LocalForageDao.prototype.getItems = function (keys) {
+        var dao = this,
+            existingEntities = [],
+            promise = new Promise(function (resolve, reject) {
+
+                keys = (Object.isArray(keys)) ? keys : [];
+
+                if (keys.length > 0) {
+                    dataStore.getItems(keys).then(function (existingEntityConfigs) {
+                        if (Object.isArray(existingEntityConfigs)) {
+                            existingEntityConfigs.forEach(function (existingEntityConfig) {
+                                existingEntities.push(dao.createEntity(existingEntityConfig));
+                            });
+                        }
+
+                        resolve(existingEntities);
+                    }).catch(function (error) {
+                        reject(new BytePushers.dao.DaoException(error));
+                    });
+                } else {
+                    resolve(existingEntities);
+                }
+            });
+
+        return promise;
+    };
+
+    BytePushers.dao.LocalForageDao.prototype.setItems = function (items) {
+        var dao = this,
+            existingEntities = [],
+            promise = new Promise(function (resolve, reject) {
+
+                items = (Object.isArray(items)) ? items : [];
+
+                if (items.length > 0) {
+                    items.forEach(function (item) {
+                        item.key = ensureValidKey(item.key);
+                        item.value = item.value.toJSON();
+                    });
+                    dataStore.setItems(items).then(function (existingEntityConfigs) {
+                        if (Object.isArray(existingEntityConfigs)) {
+                            existingEntityConfigs.forEach(function (existingEntityConfig) {
+                                existingEntities.push(dao.createEntity(existingEntityConfig));
+                            });
+                        }
+
+                        resolve(existingEntities);
+                    }).catch(function (error) {
+                        reject(new BytePushers.dao.DaoException(error));
+                    });
+                } else {
+                    resolve(existingEntities);
+                }
+            });
+
+        return promise;
+    };
+
+    /*jshint unused:true*/
+    /*jslint unparam: true*/
+    BytePushers.dao.LocalForageDao.prototype.findById = function (entityId) {
+        var promise = new Promise(function (resolve, reject) {
+                //jshint unused:false
+                BytePushers.dao.LocalForageDao.read(entityId).then(function (foundEntity) {
+                    resolve(foundEntity);
+                }).catch(function (error) {
+                    resolve(null);
+                });
+            });
+
+        return promise;
+    };
+    /*jslint unparam: false*/
+    /*jshint unused:false*/
+
+    /*jshint unused:true*/
+    /*jslint unparam: true*/
+    BytePushers.dao.LocalForageDao.prototype.find = function (criteria, limit) {
+        var dao = this,
+            foundEntities = [],
+            promise = new Promise(function (resolve, reject) {
+                //jshint unused:false
+                dataStore.find(criteria, limit).then(function (foundEntityConfigs) {
+                    foundEntityConfigs.forEach(function (foundEntityConfig) {
+                        foundEntities.push(dao.createEntity(foundEntityConfig));
+                    });
+                    resolve(foundEntities);
+                }).catch(function (error) {
+                    resolve(foundEntities);
+                });
+            });
+
+        return promise;
+    };
+    /*jslint unparam: false*/
+    /*jshint unused:false*/
+
+    /*jshint unused:true*/
     BytePushers.dao.LocalForageDao.prototype.update = function (updatedEntity) {
         var dao = this,
             promise = new Promise(function (resolve, reject) {
@@ -188,6 +294,7 @@
 
         return promise;
     };
+    /*jshint unused:false*/
 
     BytePushers.dao.LocalForageDao.prototype.delete = function (entityId) {
         var dao = this,

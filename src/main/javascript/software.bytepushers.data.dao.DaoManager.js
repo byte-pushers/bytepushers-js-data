@@ -50,6 +50,9 @@
         function mergeConfigurations(target, source) {
             var property;
 
+            target = (Object.isDefined(target)) ? target : {};
+            source = (Object.isDefined(source)) ? source : {};
+
             for (property in source) {
                 if (source.hasOwnProperty(property)) {
                     target[property] = source[property];

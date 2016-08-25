@@ -1,6 +1,6 @@
 {
   "name": "bytepushers-js-data",
-  "version": "0.0.3",
+  "version": "0.0.7",
   "description": "A JavaScript framework that implements the Repository Design Pattern for persisting data to a data store.",
   "repository": {
     "type": "git",
@@ -20,6 +20,10 @@
   ],
   "dependencies": {
     "localforage": "^1.4.2",
-    "bytepushers-js-core": "^0.0.66"
+    "bytepushers-js-core": "~0.0.66",
+    "collections": "^2.0.1",
+    "localforage-find": "^2.0.0",
+    "localforage-getitems": "^1.3.0",
+    "localforage-setitems": "^1.2.0"
   }
 }
