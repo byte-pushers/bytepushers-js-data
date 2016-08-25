@@ -69,8 +69,6 @@
                 }
             }
 
-
-
             function getEntityConstructor(daoConfig) {
                 if (!Object.isDefined(daoConfig)) {
                     throw new BytePushers.dao.DaoException("DAO Configuration must be defined.");
