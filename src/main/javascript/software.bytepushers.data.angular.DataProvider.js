@@ -21,8 +21,6 @@ angular.module('software.bytepushers.data.provider').provider('DataProvider', fu
             throw new BytePushers.dao.DaoException("No DAO Entity Configurations defined.");
         }
 
-        localforageFind(localforage);
-
         dataProviderConfig.entities.forEach(function (entityClassName) {
             BytePushers.dao.DaoManager.getInstance().registerDao({
                 name        : 'pmms-mobile-app',
