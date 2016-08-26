@@ -1,5 +1,6 @@
 /*global BytePushers*/
-/* jshint -W108, -W109, unused:vars*/
+/* jshint -W108, -W109*/
+/*exported isEntityIdValid */
 /**
  * Created by tonte on 7/17/16.
  */
@@ -8,22 +9,28 @@
     BytePushers = BytePushers || {};
     BytePushers.dao = BytePushers.dao ||  BytePushers.namespace("software.bytepushers.data.dao");
 
+    function getEntityIdValidationMethod(daoConfig) {
+        return (Object.isDefined(daoConfig) && Object.isDefined(daoConfig.entity) &&
+        Object.isFunction(daoConfig.entity.validationMethods.isValidEntityId)) ?
+                daoConfig.entityIdValidationMethod : function () { return true; };
+    }
+
     BytePushers.dao.GenericDAO = function (daoConfig) {
         var Entity = (Object.isDefined(daoConfig) && Object.isFunction(daoConfig.Entity)) ? daoConfig.Entity : null,
             isEntityIdValid = getEntityIdValidationMethod(daoConfig);
 
-        this.getEntity = function() {
+        this.getEntity = function () {
             return Entity;
         };
 
-        function getEntityIdValidationMethod (daoConfig) {
-            return (Object.isDefined(daoConfig) && Object.isDefined(daoConfig.entity) &&
-            Object.isFunction(daoConfig.entity.validationMethods.isValidEntityId)) ?
-                daoConfig.entityIdValidationMethod : function () { return true; };
-        }
+        this.isEntityIdValid = function () {
+            isEntityIdValid();
+        };
     };
 
-    BytePushers.dao.GenericDAO.prototype.isEntityIdValid = isEntityIdValid;
+    BytePushers.dao.GenericDAO.prototype.isEntityIdValid = function () {
+        this.isEntityIdValid();
+    };
 
     /*jshint unused:true*/
     BytePushers.dao.GenericDAO.prototype.createEntity = function (entityConfig) {
