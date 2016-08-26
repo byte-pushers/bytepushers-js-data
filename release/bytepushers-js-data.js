@@ -230,7 +230,8 @@ angular.module('software.bytepushers.data.provider').provider('DataProvider', fu
         return dataManager;
     }());
 }(BytePushers));;/*global BytePushers*/
-/* jshint -W108, -W109, unused:vars*/
+/* jshint -W108, -W109*/
+/*exported isEntityIdValid */
 /**
  * Created by tonte on 7/17/16.
  */
@@ -239,24 +240,32 @@ angular.module('software.bytepushers.data.provider').provider('DataProvider', fu
     BytePushers = BytePushers || {};
     BytePushers.dao = BytePushers.dao ||  BytePushers.namespace("software.bytepushers.data.dao");
 
-    var Entity,
-        isEntityIdValid,
-        getEntityIdValidationMethod = function (daoConfig) {
-            return (Object.isDefined(daoConfig) && Object.isDefined(daoConfig.entity) &&
-                    Object.isFunction(daoConfig.entity.validationMethods.isValidEntityId)) ?
-                    daoConfig.entityIdValidationMethod : function () { return true; };
-        };
+    function getEntityIdValidationMethod(daoConfig) {
+        return (Object.isDefined(daoConfig) && Object.isDefined(daoConfig.entity) &&
+        Object.isFunction(daoConfig.entity.validationMethods.isValidEntityId)) ?
+                daoConfig.entityIdValidationMethod : function () { return true; };
+    }
 
     BytePushers.dao.GenericDAO = function (daoConfig) {
-        Entity = (Object.isDefined(daoConfig) && Object.isFunction(daoConfig.Entity)) ? daoConfig.Entity : null;
-        isEntityIdValid = getEntityIdValidationMethod(daoConfig);
+        var Entity = (Object.isDefined(daoConfig) && Object.isFunction(daoConfig.Entity)) ? daoConfig.Entity : null,
+            isEntityIdValid = getEntityIdValidationMethod(daoConfig);
+
+        this.getEntity = function () {
+            return Entity;
+        };
+
+        this.isEntityIdValid = function () {
+            isEntityIdValid();
+        };
     };
 
-    BytePushers.dao.GenericDAO.prototype.isEntityIdValid = isEntityIdValid;
+    BytePushers.dao.GenericDAO.prototype.isEntityIdValid = function () {
+        this.isEntityIdValid();
+    };
 
     /*jshint unused:true*/
     BytePushers.dao.GenericDAO.prototype.createEntity = function (entityConfig) {
-        var entity;
+        var entity, Entity = this.getEntity();
 
         if (!BytePushers.dao.GenericDAO.prototype.isPrototypeOf(this)) {
             throw new BytePushers.dao.DaoException("Can not call object unless in Object's hierarchy prototype chain.");
