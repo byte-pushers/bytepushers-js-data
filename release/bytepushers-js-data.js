@@ -404,6 +404,24 @@ angular.module('software.bytepushers.data.provider').provider('DataProvider', fu
 
             return noSqlId;
         },
+        getNoSqlId = function (targetEntity) {
+            var noSqlId, msg;
+
+            if (BytePushers.implementsInterface(targetEntity, "getNoSqlId")) {
+                noSqlId = targetEntity.getNoSqlId();
+            } else {
+                if (Object.isDefined(targetEntity.getId())) {
+                    noSqlId = targetEntity.getId();
+                } else {
+                    msg = "Could not get NoSQLId because targetEntity does not implement getNoSqlId() method and getId() " +
+                          "method returns null or undefined";
+                    throw new BytePushers.dao.DaoException(msg);
+                }
+            }
+
+
+            return noSqlId;
+        },
         ensureValidKey = function (key) {
             return (typeof key === "string" || key instanceof String || typeof key === "number" || key instanceof Number) ?
                     key.toString() : JSON.stringify(key.toJSON());
@@ -440,7 +458,7 @@ angular.module('software.bytepushers.data.provider').provider('DataProvider', fu
                 targetEntityReflection = (new BytePushers.util.Reflection()).getInstance(newEntity.constructor, newEntity.toJSON());
                 generateNoSqlId(targetEntityReflection);
 
-                dataStore.setItem(ensureValidKey(targetEntityReflection.getId()),
+                dataStore.setItem(ensureValidKey(getNoSqlId(targetEntityReflection)),
                     (new newEntity.constructor(targetEntityReflection.toJSON())).toJSON()).then(function (newlyPersistedEntityStringConfig) {
                     return newlyPersistedEntityStringConfig;
                 }).then(function (newlyPersistedEntityConfig) {
@@ -583,7 +601,8 @@ angular.module('software.bytepushers.data.provider').provider('DataProvider', fu
 
     /*jshint unused:true*/
     BytePushers.dao.LocalForageDao.prototype.update = function (updatedEntity) {
-        var dao = this,
+        var targetEntityReflection,
+            dao = this,
             promise = new Promise(function (resolve, reject) {
                 try {
                     if (!BytePushers.dao.LocalForageDao.prototype.isPrototypeOf(dao)) {
@@ -597,11 +616,15 @@ angular.module('software.bytepushers.data.provider').provider('DataProvider', fu
                     reject(error);
                 }
 
-                dataStore.setItem(ensureValidKey(updatedEntity.getId()), updatedEntity.toJSON()).then(function (updatedEntityConfig) {
-                    resolve(dao.createEntity(updatedEntityConfig));
-                }).catch(function (error) {
-                    reject(new BytePushers.dao.DaoException(error));
-                });
+                targetEntityReflection = (new BytePushers.util.Reflection()).getInstance(updatedEntity.constructor, updatedEntity.toJSON());
+                generateNoSqlId(targetEntityReflection);
+
+                dataStore.setItem(ensureValidKey(getNoSqlId(targetEntityReflection)), targetEntityReflection.toJSON())
+                    .then(function (updatedEntityConfig) {
+                        resolve(dao.createEntity(updatedEntityConfig));
+                    }).catch(function (error) {
+                        reject(new BytePushers.dao.DaoException(error));
+                    });
             });
 
         return promise;

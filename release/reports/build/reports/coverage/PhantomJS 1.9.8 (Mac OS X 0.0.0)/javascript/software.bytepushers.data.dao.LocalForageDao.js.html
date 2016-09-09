@@ -20,24 +20,24 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">57.14% </span>
+        <span class="strong">58.6% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>84/147</span>
+        <span class='fraction'>92/157</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">40% </span>
+        <span class="strong">42.19% </span>
         <span class="quiet">Branches</span>
-        <span class='fraction'>24/60</span>
+        <span class='fraction'>27/64</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">46.81% </span>
+        <span class="strong">47.92% </span>
         <span class="quiet">Functions</span>
-        <span class='fraction'>22/47</span>
+        <span class='fraction'>23/48</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">57.14% </span>
+        <span class="strong">58.6% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>84/147</span>
+        <span class='fraction'>92/157</span>
       </div>
     </div>
   </div>
@@ -362,7 +362,30 @@
 317
 318
 319
-320</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+320
+321
+322
+323
+324
+325
+326
+327
+328
+329
+330
+331
+332
+333
+334
+335
+336
+337
+338
+339
+340
+341
+342
+343</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -437,22 +460,40 @@
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">2×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">2×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5×</span>
@@ -635,6 +676,7 @@
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -648,6 +690,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -762,14 +808,32 @@
                 <span class="missing-if-branch" title="if path not taken" >I</span>if (BytePushers.implementsInterface(targetEntityReflection, "getNoSqlId")) {
 <span class="cstat-no" title="statement not covered" >                    noSqlId = targetEntityReflection.getNoSqlId();</span>
                 } else {
-                    <span class="missing-if-branch" title="else path not taken" >E</span>if (!Object.isDefined(targetEntityReflection.getId())) {
+                    if (!Object.isDefined(targetEntityReflection.getId())) {
                         noSqlId = new Date().getTime() + someRandomNumber(9999999);
                         targetEntityReflection.getMethod("setId")(noSqlId);
                     } else {
-<span class="cstat-no" title="statement not covered" >                        noSqlId = targetEntityReflection.getId();</span>
+                        noSqlId = targetEntityReflection.getId();
                     }
                 }
             }
+&nbsp;
+            return noSqlId;
+        },
+        getNoSqlId = function (targetEntity) {
+            var noSqlId, msg;
+&nbsp;
+            <span class="missing-if-branch" title="if path not taken" >I</span>if (BytePushers.implementsInterface(targetEntity, "getNoSqlId")) {
+<span class="cstat-no" title="statement not covered" >                noSqlId = targetEntity.getNoSqlId();</span>
+            } else {
+                <span class="missing-if-branch" title="else path not taken" >E</span>if (Object.isDefined(targetEntity.getId())) {
+                    noSqlId = targetEntity.getId();
+                } else {
+<span class="cstat-no" title="statement not covered" >                    msg = "Could not get NoSQLId because targetEntity does not implement getNoSqlId() method and getId() " +</span>
+                          "method returns null or undefined";
+<span class="cstat-no" title="statement not covered" >                    throw new BytePushers.dao.DaoException(msg);</span>
+                }
+            }
+&nbsp;
 &nbsp;
             return noSqlId;
         },
@@ -809,7 +873,7 @@
                 targetEntityReflection = (new BytePushers.util.Reflection()).getInstance(newEntity.constructor, newEntity.toJSON());
                 generateNoSqlId(targetEntityReflection);
 &nbsp;
-                dataStore.setItem(ensureValidKey(targetEntityReflection.getId()),
+                dataStore.setItem(ensureValidKey(getNoSqlId(targetEntityReflection)),
                     (new newEntity.constructor(targetEntityReflection.toJSON())).toJSON()).then(function (newlyPersistedEntityStringConfig) {
                     return newlyPersistedEntityStringConfig;
                 }).then(function (newlyPersistedEntityConfig) {
@@ -952,7 +1016,8 @@
 &nbsp;
     /*jshint unused:true*/
     BytePushers.dao.LocalForageDao.prototype.update = function (updatedEntity) {
-        var dao = this,
+        var targetEntityReflection,
+            dao = this,
             promise = new Promise(function (resolve, reject) {
                 try {
                     <span class="missing-if-branch" title="if path not taken" >I</span>if (!BytePushers.dao.LocalForageDao.prototype.isPrototypeOf(dao)) {
@@ -966,11 +1031,15 @@
 <span class="cstat-no" title="statement not covered" >                    reject(error);</span>
                 }
 &nbsp;
-                dataStore.setItem(ensureValidKey(updatedEntity.getId()), updatedEntity.toJSON()).then(function (updatedEntityConfig) {
-                    resolve(dao.createEntity(updatedEntityConfig));
-                }).catch(<span class="fstat-no" title="function not covered" >function (error) {</span>
-<span class="cstat-no" title="statement not covered" >                    reject(new BytePushers.dao.DaoException(error));</span>
-                });
+                targetEntityReflection = (new BytePushers.util.Reflection()).getInstance(updatedEntity.constructor, updatedEntity.toJSON());
+                generateNoSqlId(targetEntityReflection);
+&nbsp;
+                dataStore.setItem(ensureValidKey(getNoSqlId(targetEntityReflection)), targetEntityReflection.toJSON())
+                    .then(function (updatedEntityConfig) {
+                        resolve(dao.createEntity(updatedEntityConfig));
+                    }).catch(<span class="fstat-no" title="function not covered" >function (error) {</span>
+<span class="cstat-no" title="statement not covered" >                        reject(new BytePushers.dao.DaoException(error));</span>
+                    });
             });
 &nbsp;
         return promise;
@@ -1006,7 +1075,7 @@
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Fri Aug 26 2016 16:52:08 GMT-0700 (PDT)
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Fri Sep 09 2016 12:56:31 GMT-0700 (PDT)
 </div>
 </div>
 <script src="../prettify.js"></script>
