@@ -90,7 +90,7 @@
 
             return noSqlId;
         },
-        getNoSqlId = function(targetEntity) {
+        getNoSqlId = function (targetEntity) {
             var noSqlId, msg;
 
             if (BytePushers.implementsInterface(targetEntity, "getNoSqlId")) {
@@ -107,8 +107,7 @@
 
 
             return noSqlId;
-        }
-        ,
+        },
         ensureValidKey = function (key) {
             return (typeof key === "string" || key instanceof String || typeof key === "number" || key instanceof Number) ?
                     key.toString() : JSON.stringify(key.toJSON());
@@ -306,11 +305,12 @@
                 targetEntityReflection = (new BytePushers.util.Reflection()).getInstance(updatedEntity.constructor, updatedEntity.toJSON());
                 generateNoSqlId(targetEntityReflection);
 
-                dataStore.setItem(ensureValidKey(getNoSqlId(targetEntityReflection)), targetEntityReflection.toJSON()).then(function (updatedEntityConfig) {
-                    resolve(dao.createEntity(updatedEntityConfig));
-                }).catch(function (error) {
-                    reject(new BytePushers.dao.DaoException(error));
-                });
+                dataStore.setItem(ensureValidKey(getNoSqlId(targetEntityReflection)), targetEntityReflection.toJSON())
+                    .then(function (updatedEntityConfig) {
+                        resolve(dao.createEntity(updatedEntityConfig));
+                    }).catch(function (error) {
+                        reject(new BytePushers.dao.DaoException(error));
+                    });
             });
 
         return promise;
