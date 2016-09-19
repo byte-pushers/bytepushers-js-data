@@ -1,6 +1,6 @@
 {
   "name": "bytepushers-js-data",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "A JavaScript framework that implements the Repository Design Pattern for persisting data to a data store.",
   "repository": {
     "type": "git",

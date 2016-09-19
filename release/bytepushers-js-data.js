@@ -682,4 +682,347 @@ angular.module('software.bytepushers.data.provider').provider('DataProvider', fu
     BytePushers.data.DataException.prototype.toString = function () {
         return this.name + "(" + this.message + ")";
     };
-}(window, BytePushers));
+}(window, BytePushers));;/**
+ * Created by tonte on 8/23/16.
+ */
+/*global console, BytePushers*/
+/* jshint -W108, -W109, -W054 */
+(function (BytePushers) {
+    'use strict';
+
+    BytePushers = BytePushers || {};
+    BytePushers.model = BytePushers.model || BytePushers.namespace("software.bytepushers.data.model");
+
+    BytePushers.model.NoSqlId = function NoSqlId(noSqlIdJsonConfig) {
+        var id = (Object.isDefined(noSqlIdJsonConfig) && Object.isNumeric(noSqlIdJsonConfig.id)) ? noSqlIdJsonConfig.id : null,
+            demoMode = (Object.isDefined(noSqlIdJsonConfig) && Object.isString(noSqlIdJsonConfig.demoMode)) ? noSqlIdJsonConfig.demoMode : null,
+            entityType = (Object.isDefined(noSqlIdJsonConfig) && Object.isString(noSqlIdJsonConfig.entityType)) ? noSqlIdJsonConfig.entityType : null,
+            dataId = (Object.isDefined(noSqlIdJsonConfig) && Object.isString(noSqlIdJsonConfig.dataId)) ? noSqlIdJsonConfig.dataId : null,
+            dataShopId =
+                (Object.isDefined(noSqlIdJsonConfig) && Object.isNumeric(noSqlIdJsonConfig.dataShopId)) ? noSqlIdJsonConfig.dataShopId : null,
+            dataLastModifiedTime =
+                (Object.isDefined(noSqlIdJsonConfig) &&
+                Object.isNumeric(noSqlIdJsonConfig.dataLastModifiedTime)) ? noSqlIdJsonConfig.dataLastModifiedTime : null;
+
+        this.getId = function () {
+            return id;
+        };
+
+        this.getDemoMode = function () {
+            return demoMode;
+        };
+
+        this.getEntityType = function () {
+            return entityType;
+        };
+
+        this.getDataId = function () {
+            return dataId;
+        };
+
+        this.getShopId = function () {
+            return dataShopId;
+        };
+
+        this.getDataLastModifiedTime = function () {
+            return dataLastModifiedTime;
+        };
+
+        BytePushers.model.NoSqlId.prototype.toJSON = function (returnJsonAsString) {
+
+            returnJsonAsString = Boolean(returnJsonAsString);
+
+            var jsonId = (Object.isNumeric(this.getId())) ? this.getId() : null,
+                jsonDemoMode = (Object.isString(this.getDemoMode())) ? "\"" + this.getDemoMode() + "\"" : null,
+                jsonEntityType = (Object.isString(this.getEntityType())) ? "\"" + this.getEntityType() + "\"" : null,
+                jsonDataId = (Object.isString(this.getDataId())) ? "\"" + this.getDataId() + "\"" : null,
+                jsonDataShopId = (Object.isNumeric(this.getShopId())) ? this.getShopId() : null,
+                jsonDataLastModifiedTime = (Object.isNumeric(this.getDataLastModifiedTime())) ? this.getDataLastModifiedTime() : null,
+                json = "{" +
+                    "\"id\": " + jsonId + "," +
+                    "\"demoMode\": " + jsonDemoMode + "," +
+                    "\"entityType\": " + jsonEntityType + "," +
+                    "\"dataId\": " + jsonDataId + "," +
+                    "\"dataShopId\": " + jsonDataShopId + "," +
+                    "\"dataLastModifiedTime\": " + jsonDataLastModifiedTime +
+                    "}";
+            return returnJsonAsString ? json : JSON.parse(json);
+        };
+
+        BytePushers.model.NoSqlId.prototype.toString = function () {
+            return "NoSqlId {" +
+                "id=" + this.getId() + "," +
+                "demoMode=" + this.getDemoMode() + "," +
+                "entityType=" + this.getEntityType() + "," +
+                "dataId=" + this.getDataId() + "," +
+                "dataShopId=" + this.getShopId() + "," +
+                "dataLastModifiedTime=" + this.getDataLastModifiedTime().toString() +
+                "}";
+        };
+
+    };
+}(BytePushers));
+;/**
+ * Created by tonte on 8/16/16.
+ */
+/*global console, BytePushers*/
+/* jshint -W108, -W109, -W054*/
+(function (BytePushers) {
+    'use strict';
+
+    BytePushers = BytePushers || {};
+    BytePushers.strategy = BytePushers.strategy ||  BytePushers.namespace("software.bytepushers.data.strategy");
+
+    BytePushers.strategy.DataSyncConflictResolutionClientWinsStrategy = function DataSyncConflictResolutionClientWinsStrategy() {
+        BytePushers.strategy.DataSyncConflictResolutionClientWinsStrategy.prototype.superclass.apply(this, []);
+
+        /*jshint unused:true*/
+        BytePushers.strategy.DataSyncConflictResolutionClientWinsStrategy.prototype.synchronizeOnlineData =
+            function (dirtyOfflineDataSearchCriteria, lastSynchronizedTime, someDao, dataSynchronizationService) {
+                // Save work order queue to off-line data base.
+                var promise = new Promise(function (resolve, reject) {
+
+                    if (!Object.isDefined(dirtyOfflineDataSearchCriteria)) {
+                        throw new BytePushers.exceptions.NullPointerException("dirtyOfflineDataSearchCriteria parameter must be defined.");
+                    }
+
+                    if (!Object.isDate(lastSynchronizedTime)) {
+                        throw new BytePushers.exceptions.NullPointerException("lastSynchronizedTime parameter must be defined as a Date.");
+                    }
+
+                    if (!Object.isDefined(someDao)) {
+                        throw new BytePushers.exceptions.NullPointerException("someDao parameter must be defined.");
+                    }
+
+                    if (!Object.isDefined(dataSynchronizationService)) {
+                        throw new BytePushers.exceptions.NullPointerException("dataSynchronizationService parameter must be defined.");
+                    }
+
+                    dataSynchronizationService.getChanges(lastSynchronizedTime).then(function (conflictingPersistedObjects) {
+                        return this.convertResultsToMap(conflictingPersistedObjects);
+                    }).then(function (conflictingPersistedObjectMap) {
+                        someDao.find(dirtyOfflineDataSearchCriteria).then(function (dirtyOfflineDataSearchCriteriaResultObjects) {
+                            var conflictingPersistedObject;
+                            dirtyOfflineDataSearchCriteriaResultObjects.forEach(function (dirtyOfflineDataDetachedObject) {
+                                if (BytePushers.implementsInterface(dirtyOfflineDataDetachedObject, "getNoSqlId")) {
+
+                                    conflictingPersistedObject = conflictingPersistedObjectMap.get(dirtyOfflineDataDetachedObject.getNoSqlId());
+
+                                    if (Object.isDefined(conflictingPersistedObject)) {
+                                        conflictingPersistedObjectMap.remove(conflictingPersistedObject.getNoSqlId());
+                                    }
+                                } else {
+                                    console.log("Warning: " + dirtyOfflineDataDetachedObject + " does not implement getNoSqlId() method.");
+                                }
+
+                                dataSynchronizationService.save(dirtyOfflineDataDetachedObject);
+                            });
+                        });
+
+                        return conflictingPersistedObjectMap;
+                    }).then(function (newlyPersistedObjectMap) {
+                        if (Object.isDefined(newlyPersistedObjectMap)) {
+                            newlyPersistedObjectMap.toArray().forEach(function (newlyPersistedObject) {
+                                someDao.create(newlyPersistedObject);
+                                newlyPersistedObjectMap.remove(newlyPersistedObject.getNoSqlId());
+                            });
+                        }
+
+                        resolve(true);
+                    }).catch(function (error) {
+                        reject(new BytePushers.dao.DataException(error));
+                    });
+                });
+
+                return promise;
+            };
+        /*jshint unused:false*/
+
+        /*jshint unused:true*/
+        BytePushers.strategy.DataSyncConflictResolutionClientWinsStrategy.prototype.synchronizeOfflineData =
+            function () { /*dirtyOfflineDataSearchCriteria, lastSynchronizedTime, someDao*/
+                // Nothing to synch since we are offline.  Just resolve promise and return promise with synchronized status set to true.
+                var promise = new Promise(function (resolve) {/*, reject*/
+                    resolve(true);
+                });
+                return promise;
+            };
+        /*jshint unused:false*/
+    };
+    BytePushers.strategy.DataSyncConflictResolutionClientWinsStrategy.prototype =
+        BytePushers.inherit(BytePushers.strategy.DataSyncConflictResolutionStrategy.prototype);
+    BytePushers.strategy.DataSyncConflictResolutionClientWinsStrategy.prototype.constructor =
+        BytePushers.strategy.DataSyncConflictResolutionClientWinsStrategy;
+    BytePushers.strategy.DataSyncConflictResolutionClientWinsStrategy.prototype.superclass =
+        BytePushers.strategy.DataSyncConflictResolutionStrategy;
+}(BytePushers));;/**
+ * Created by tonte on 8/16/16.
+ */
+/*global console, BytePushers, Map*/
+/* jshint -W108, -W109, -W054 */
+(function (BytePushers) {
+    'use strict';
+
+    BytePushers = BytePushers || {};
+    BytePushers.strategy = BytePushers.strategy || BytePushers.namespace("software.bytepushers.data.strategy");
+
+    BytePushers.strategy.DataSyncConflictResolutionServerWinsStrategy = function DataSyncConflictResolutionServerWinsStrategy() {
+        BytePushers.strategy.DataSyncConflictResolutionServerWinsStrategy.prototype.superclass.apply(this, []);
+
+        /*jshint unused:true*/
+        BytePushers.strategy.DataSyncConflictResolutionServerWinsStrategy.prototype.synchronizeOnlineData =
+            function (searchCriteria, lastSynchronizedTime, daoManager, dataSynchronizationService) {
+                //Save work order queue to off-line data base.
+                var detachedSearchCriteriaResultMap = new Map(),
+                    promise = new Promise(function (resolve, reject) {
+
+                        if (!Object.isDefined(searchCriteria)) {
+                            throw new BytePushers.exceptions.NullPointerException("searchCriteria parameter must be defined.");
+                        }
+
+                        if (!Object.isDate(lastSynchronizedTime)) {
+                            throw new BytePushers.exceptions.NullPointerException("lastSynchronizedTime parameter must be defined as a Date.");
+                        }
+
+                        if (!Object.isDefined(daoManager)) {
+                            throw new BytePushers.exceptions.NullPointerException("daoManager parameter must be defined.");
+                        }
+
+                        if (!Object.isDefined(dataSynchronizationService)) {
+                            throw new BytePushers.exceptions.NullPointerException("dataSynchronizationService parameter must be defined.");
+                        }
+
+                        daoManager.find(searchCriteria).then(function (searchCriteriaDetachedObjects) {
+                            var detachedSearchCriteriaResultMapPopulated = false;
+                            searchCriteriaDetachedObjects.forEach(function (searchCriteriaDetachedObject) {
+                                if (BytePushers.implementsInterface(searchCriteriaDetachedObject, "getNoSqlId")) {
+                                    detachedSearchCriteriaResultMap.set(searchCriteriaDetachedObject.getNoSqlId(), searchCriteriaDetachedObject);
+                                    detachedSearchCriteriaResultMapPopulated = true;
+                                } else {
+                                    console.log("Warning: " + searchCriteriaDetachedObject + " does not implement getNoSqlId() method.");
+                                }
+                            });
+
+                            return detachedSearchCriteriaResultMapPopulated;
+                        }).then(function () { /*detachedSearchCriteriaResultMapPopulated*/
+                            return dataSynchronizationService.getChanges(lastSynchronizedTime);
+                        }).then(function (conflictingPersistedObjects) {
+                            var conflictingDetachedObject;
+
+                            conflictingPersistedObjects.forEach(function (conflictingPersistedObject, conflictingPersistedObjectIndex) {
+                                if (Object.isDefined(conflictingPersistedObject)) {
+                                    conflictingDetachedObject = detachedSearchCriteriaResultMap.get(conflictingPersistedObject.getNoSqlId());
+
+                                    if (Object.isDefined(conflictingDetachedObject)) {
+                                        conflictingPersistedObjects.splice(conflictingPersistedObjectIndex, 1);
+                                        daoManager.update(conflictingPersistedObject);
+                                    } else {
+                                        daoManager.create(conflictingPersistedObject);
+                                    }
+                                }
+                            });
+
+                            resolve(true);
+                        }).catch(function (error) {
+                            reject(new BytePushers.dao.DataException(error));
+                        });
+                    });
+
+                return promise;
+            };
+        /*jshint unused:false*/
+
+        /*jshint unused:true*/
+        BytePushers.strategy.DataSyncConflictResolutionServerWinsStrategy.prototype.synchronizeOfflineData =
+            function () { /*searchCriteria, lastSynchronizedTime, daoManager, dataSynchronizationService*/
+                //Get work order queue from off-line data base.
+                var promise = new Promise(function (resolve) { /*reject*/
+                    resolve(true);
+                });
+
+                return promise;
+            };
+        /*jshint unused:false*/
+    };
+    BytePushers.strategy.DataSyncConflictResolutionServerWinsStrategy.prototype =
+        BytePushers.inherit(BytePushers.strategy.DataSyncConflictResolutionStrategy.prototype);
+    BytePushers.strategy.DataSyncConflictResolutionServerWinsStrategy.prototype.constructor =
+        BytePushers.strategy.DataSyncConflictResolutionServerWinsStrategy;
+    BytePushers.strategy.DataSyncConflictResolutionServerWinsStrategy.prototype.superclass =
+        BytePushers.strategy.DataSyncConflictResolutionStrategy;
+}(BytePushers));
+;/**
+ * Created by tonte on 8/16/16.
+ */
+/*global console, BytePushers, Map*/
+/* jshint -W108, -W109, -W054 */
+(function (BytePushers) {
+    'use strict';
+
+    BytePushers = BytePushers || {};
+    BytePushers.strategy = BytePushers.strategy || BytePushers.namespace("software.bytepushers.data.strategy");
+
+    BytePushers.strategy.DataSyncConflictResolutionStrategy = function DataSyncConflictResolutionStrategy() {
+        this.synchronizeData = function (findDirtyOfflineDataSearchCriteria, lastSynchronizedTime, onlineStatus,
+                                         someDao, dataSynchronizationService) {
+            var synchronizeDataPromise;
+            onlineStatus = Boolean(onlineStatus);
+            if (!BytePushers.strategy.DataSyncConflictResolutionStrategy.prototype.isPrototypeOf(this)) {
+                throw new BytePushers.data.DataException("Can not call object unless in Object's hierarchy prototype chain.");
+            }
+
+            if (onlineStatus) {
+                synchronizeDataPromise = this.synchronizeOnlineData(findDirtyOfflineDataSearchCriteria, lastSynchronizedTime,
+                    someDao, dataSynchronizationService);
+            } else {
+                synchronizeDataPromise = this.synchronizeOfflineData(findDirtyOfflineDataSearchCriteria, lastSynchronizedTime, someDao);
+            }
+
+            return synchronizeDataPromise;
+        };
+
+        /*jshint unused:true*/
+        BytePushers.strategy.DataSyncConflictResolutionStrategy.prototype.synchronizeOnlineData =
+            function () { /*searchCriteria, lastSynchronizedTime, someDao, dataSynchronizationService*/
+                //Save work order queue to off-line data base.
+                if (!BytePushers.strategy.DataSyncConflictResolutionStrategy.prototype.isPrototypeOf(this)) {
+                    throw new BytePushers.data.DataException("Can not call object unless in Object's hierarchy prototype chain.");
+                }
+
+                throw new BytePushers.data.DataException("abstract method");
+            };
+        /*jshint unused:false*/
+
+        /*jshint unused:true*/
+        BytePushers.strategy.DataSyncConflictResolutionStrategy.prototype.synchronizeOfflineData =
+            function () {/*searchCriteria, lastSynchronizedTime, someDao*/
+                //Get work order queue from off-line data base.
+                if (!BytePushers.strategy.DataSyncConflictResolutionStrategy.prototype.isPrototypeOf(this)) {
+                    throw new BytePushers.data.DataException("Can not call object unless in Object's hierarchy prototype chain.");
+                }
+
+                throw new BytePushers.data.DataException("abstract method");
+            };
+        /*jshint unused:false*/
+
+        /*jshint unused:true*/
+        BytePushers.strategy.DataSyncConflictResolutionStrategy.prototype.convertResultsToMap = function (objects) {
+            var objectMap = new Map();
+
+            if (Object.isArray(objects)) {
+                objects.forEach(function (object) {
+                    if (BytePushers.implementsInterface(object, "getNoSqlId")) {
+                        if (Object.isDefined(object)) {
+                            objectMap.set(object.getNoSqlId(), object);
+                        }
+                    } else {
+                        console.log("Warning: " + object + " does not implement getNoSqlId() method.");
+                    }
+                });
+            }
+
+            return objectMap;
+        };
+        /*jshint unused:false*/
+    };
+}(BytePushers));
